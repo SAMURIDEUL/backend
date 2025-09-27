@@ -1,9 +1,6 @@
 package com.example.samuL.controller;
 
-import com.example.samuL.dto.LoginRequestDto;
-import com.example.samuL.dto.LoginResponseDto;
-import com.example.samuL.dto.MyInfoDto;
-import com.example.samuL.dto.UserDto;
+import com.example.samuL.dto.*;
 import com.example.samuL.jwt.JwtTokenProvider;
 import com.example.samuL.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,7 +98,16 @@ public class UserController {
 
 
     // 회원정보 수정
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMyInfo(
+            @RequestBody UpdateUserDto updateUserDto,
+            Authentication authentication
+    ){
+        String email = authentication.getName();
+        userService.updateUser(email, updateUserDto);
 
+        return ResponseEntity.ok("회원정보가 수정 되었습니다.");
+    }
 
 
     // 회원 탈퇴

@@ -2,6 +2,7 @@ package com.example.samuL.service;
 
 import com.example.samuL.dto.LoginRequestDto;
 import com.example.samuL.dto.MyInfoDto;
+import com.example.samuL.dto.UpdateUserDto;
 import com.example.samuL.dto.UserDto;
 import com.example.samuL.jwt.JwtTokenProvider;
 import com.example.samuL.mapper.UserMapper;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -60,6 +63,18 @@ public class UserServiceImpl implements UserService{
         return new MyInfoDto(userDto.getEmail(), userDto.getNickname(), userDto.getCreated_at(), userDto.getUpdated_at());
     }
 
-    //회원 탈퇴
+    // 회원 정보 수정
+    @Override
+    public void updateUser(String email, UpdateUserDto updateUserDto){
+        UserDto userDto = userMapper.findByEmail(email);
+        if(userDto == null){
+            throw new UsernameNotFoundException("Email not found");
+        }
+
+        userDto.setNickname(updateUserDto.getNickname());
+        userDto.setUpdated_at(LocalDateTime.now().withNano(0));
+        userMapper.updateUser(userDto);
+    }
+
 
 }

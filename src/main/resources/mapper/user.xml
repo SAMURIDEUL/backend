@@ -42,10 +42,10 @@
     </delete>
 
     <!-- 회원정보 수정 -->
-    <update id = "updateUser" parameterType="com.example.samuL.dto.UserDto">
+    <update id = "updateUser" parameterType="com.example.samuL.dto.UpdateUserDto">
         update users
         set
-            nickname = #{nickname}
+            nickname = #{nickname},
             updated_at = #{updated_at}
         where email = #{email}
     </update>
