@@ -1,9 +1,6 @@
 package com.example.samuL.service;
 
-import com.example.samuL.dto.LoginRequestDto;
-import com.example.samuL.dto.MyInfoDto;
-import com.example.samuL.dto.UpdateUserDto;
-import com.example.samuL.dto.UserDto;
+import com.example.samuL.dto.*;
 
 public interface UserService {
     public void signupUser(UserDto userDto);
@@ -12,4 +9,5 @@ public interface UserService {
     public String login(LoginRequestDto loginRequestDto);
     public MyInfoDto getMyInfoByEmail(String email);
     public void updateUser(String email, UpdateUserDto updateUserDto);
+    public void changePassword(String token, ChangePasswordRequestDto changePasswordRequestDto);
 }

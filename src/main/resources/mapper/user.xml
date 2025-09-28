@@ -50,4 +50,11 @@
         where email = #{email}
     </update>
 
+    <!-- 비밀번호 변경 -->
+    <update id = "updatePassword" parameterType="com.example.samuL.dto.PasswordUpdateDto">
+        update users
+        set password_hash = #{newPassword}
+        where email = #{email}
+    </update>
+
 </mapper>

@@ -1,9 +1,6 @@
 package com.example.samuL.service;
 
-import com.example.samuL.dto.LoginRequestDto;
-import com.example.samuL.dto.MyInfoDto;
-import com.example.samuL.dto.UpdateUserDto;
-import com.example.samuL.dto.UserDto;
+import com.example.samuL.dto.*;
 import com.example.samuL.jwt.JwtTokenProvider;
 import com.example.samuL.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,8 @@ public class UserServiceImpl implements UserService{
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private JwtBlacklistService jwtBlacklistService;
 
     //회원가입
     @Override
@@ -75,6 +74,37 @@ public class UserServiceImpl implements UserService{
         userDto.setUpdated_at(LocalDateTime.now().withNano(0));
         userMapper.updateUser(userDto);
     }
+
+    // 비밀번호 변경
+    @Override
+    public void changePassword(String token, ChangePasswordRequestDto changePasswordRequestDto){
+        if(jwtBlacklistService.isTokenBlacklisted(token)){
+            throw new IllegalArgumentException("블랙리스트에 등록된 토큰입니다.");
+        }
+
+        String email = jwtTokenProvider.extractEmail(token);
+        UserDto userDto = userMapper.findByEmail(email);
+        if(userDto == null){
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+
+        if(!passwordEncoder.matches(changePasswordRequestDto.getCurrentPassword(), userDto.getPassword_hash())){
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        String encodedNewpassword = passwordEncoder.encode(changePasswordRequestDto.getNewPassword());
+        PasswordUpdateDto passwordUpdateDto = new PasswordUpdateDto();
+        passwordUpdateDto.setEmail(email);
+        passwordUpdateDto.setNewPassword(encodedNewpassword);
+        userMapper.updatePassword(passwordUpdateDto);
+
+        LocalDateTime expiry = jwtTokenProvider.getExpiration(token);
+        System.out.println("토큰 만료 시간: " + expiry);
+        jwtBlacklistService.addTokenToBlacklist(token, expiry);
+
+
+    }
+
 
 
 }

@@ -3,6 +3,7 @@ package com.example.samuL.jwt;
 import com.example.samuL.mapper.UserMapper;
 import com.example.samuL.service.CustomUserDetails;
 import com.example.samuL.service.CustomUserDetailsService;
+import com.example.samuL.service.JwtBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private JwtBlacklistService jwtBlacklistService;
 
     @Autowired
     private UserMapper userMapper;
@@ -39,6 +42,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+        if(token != null){
+            if(jwtBlacklistService.isTokenBlacklisted(token)){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("This token is blacklist token.");
+                return;
+            }
+        }
+
         if(!jwtTokenProvider.validateToken(token)){
             filterChain.doFilter(request, response);
             return;
@@ -53,6 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+
+
 
 
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.samuL.mapper.JwtBlacklistMapper">
+
+    <insert id = "insert" parameterType="com.example.samuL.dto.JwtBlacklistDto">
+        insert into jwt_blacklist (token, expired_at, created_at)
+        values(#{token}, #{expired_at}, #{created_at})
+    </insert>
+
+    <select id = "existByToken" parameterType="String" resultType="boolean">
+        select exists(
+            select 1 from jwt_blacklist where token = #{token}
+        )
+    </select>
+</mapper>

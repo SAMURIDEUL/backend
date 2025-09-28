@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -108,6 +109,23 @@ public class UserController {
 
         return ResponseEntity.ok("회원정보가 수정 되었습니다.");
     }
+
+    // 비밀번호 수정
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(HttpServletRequest request, @RequestBody ChangePasswordRequestDto changePasswordRequestDto){
+        String token = jwtTokenProvider.resolveToken(request);
+        if(token == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 없습니다");
+        }
+        try{
+            userService.changePassword(token, changePasswordRequestDto);
+            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요");
+        }
+        catch(UsernameNotFoundException | IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 
     // 회원 탈퇴
