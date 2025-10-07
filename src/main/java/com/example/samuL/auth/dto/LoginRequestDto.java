@@ -1,4 +1,5 @@
-package com.example.samuL.dto;
+package com.example.samuL.auth.dto;
+
 
 import lombok.Data;
 

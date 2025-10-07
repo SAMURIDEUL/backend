@@ -1,7 +1,7 @@
-package com.example.samuL.controller;
+package com.example.samuL.user.controller;
 
 import com.example.samuL.dto.*;
-import com.example.samuL.jwt.JwtTokenProvider;
+import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -77,17 +75,35 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword_hash())
-        );
-        String token = jwtTokenProvider.CreateToken(requestDto.getEmail());
-        return ResponseEntity.ok(new LoginResponseDto(token));
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto){
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword_hash())
+//        );
+//        String token = jwtTokenProvider.CreateToken(requestDto.getEmail());
+//        String token = userService.login(requestDto);
+//        return ResponseEntity.ok(new LoginResponseDto(token));
+//    }
 
     // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, Authentication authentication){
+        Map<String, String> response = new HashMap<>();
+        String token = jwtTokenProvider.resolveToken(request);
 
+
+//        if(authentication == null){
+//            response.put("error", "Authentication is missing");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); //401
+//        }
+
+        String currentEmail = authentication.getName();
+
+
+        userService.logout(token, currentEmail);
+        response.put("message", "로그아웃 성공");
+        return ResponseEntity.ok(response);
+    }
 
     // 회원정보 조회
     @GetMapping("/info")
@@ -117,13 +133,10 @@ public class UserController {
         if(token == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 없습니다");
         }
-        try{
-            userService.changePassword(token, changePasswordRequestDto);
-            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요");
-        }
-        catch(UsernameNotFoundException | IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
+        userService.changePassword(token, changePasswordRequestDto);
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요");
+
     }
 
 

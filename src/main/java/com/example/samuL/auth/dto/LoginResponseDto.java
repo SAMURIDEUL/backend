@@ -1,4 +1,5 @@
-package com.example.samuL.dto;
+package com.example.samuL.auth.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,4 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginResponseDto {
     private String token;
+
 }

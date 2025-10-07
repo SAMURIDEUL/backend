@@ -1,10 +1,10 @@
 package com.example.samuL.service;
 
 import com.example.samuL.dto.*;
-import com.example.samuL.jwt.JwtTokenProvider;
+import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,13 +43,36 @@ public class UserServiceImpl implements UserService{
 
 
     // 로그인
+//    @Override
+//    public String login(LoginRequestDto loginRequestDto){
+//        UserDto userDto = userMapper.findByEmail(loginRequestDto.getEmail());
+//        if(userDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), userDto.getPassword_hash())){
+//            throw new RuntimeException("이메일이나 비밀번호가 맞지 않습니다.");
+//        }
+//        return jwtTokenProvider.CreateToken(userDto.getEmail());
+ //   }
+
+    // 로그아웃    @Override
+    //    public String login(LoginRequestDto loginRequestDto){
+    //        UserDto userDto = userMapper.findByEmail(loginRequestDto.getEmail());
+    //        if(userDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), userDto.getPassword_hash())){
+    //            throw new RuntimeException("이메일이나 비밀번호가 맞지 않습니다.");
+    //        }
+    //        return jwtTokenProvider.CreateToken(userDto.getEmail());
+    //    }
     @Override
-    public String login(LoginRequestDto loginRequestDto){
-        UserDto userDto = userMapper.findByEmail(loginRequestDto.getEmail());
-        if(userDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), userDto.getPassword_hash())){
-            throw new RuntimeException("Invalid email or password");
+    public void logout(String token, String currentEmail){
+        if(token == null){
+            throw new IllegalArgumentException("Invalid token");
         }
-        return jwtTokenProvider.CreateToken(userDto.getEmail());
+
+        String email = jwtTokenProvider.extractEmail(token);
+        if(!email.equals(currentEmail)){
+            throw new AccessDeniedException("User mismatch. Cannot logout");
+        }
+
+        LocalDateTime expiration = jwtTokenProvider.getExpiration(token);
+        jwtBlacklistService.addTokenToBlacklist(token, expiration);
     }
 
     // 회원정보 조회
@@ -99,10 +122,7 @@ public class UserServiceImpl implements UserService{
         userMapper.updatePassword(passwordUpdateDto);
 
         LocalDateTime expiry = jwtTokenProvider.getExpiration(token);
-        System.out.println("토큰 만료 시간: " + expiry);
         jwtBlacklistService.addTokenToBlacklist(token, expiry);
-
-
     }
 
 
