@@ -66,8 +66,21 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    // 서비스 로직 전용, 토큰 유효성 체크
+    public boolean isValidateToken(String token){
+        try{
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        }
+        catch(JwtException | IllegalArgumentException e){
+            return false;
+        }
+    }
 
-    //jwt 유효성 체크
+    // 필터 전용, 토큰 유효성에 따른 Exception 처리 전용
     public void validateToken(String token) throws JwtAuthenticationException{
         try {
             Jwts.parserBuilder()

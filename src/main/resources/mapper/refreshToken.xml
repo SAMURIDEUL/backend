@@ -21,7 +21,7 @@
         where email = #{email}
     </delete>
 
-    <select id="findByEmail" parameterType="string" resultType="com.example.samuL.auth.dto.RefreshTokenDto">
+    <select id="findByEmail" resultType="com.example.samuL.auth.dto.RefreshTokenDto">
         select *
         from refresh_token
         where email = #{email}

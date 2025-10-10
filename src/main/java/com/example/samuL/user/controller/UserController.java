@@ -24,6 +24,7 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+
     // 이메일 중복 체크
     @PostMapping("/check-email")
     public ResponseEntity<Map<String, Object>> checkEmail(@RequestBody Map<String, String> request){
@@ -74,16 +75,6 @@ public class UserController {
 
     }
 
-    // 로그인
-//    @PostMapping("/login")
-//    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto){
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword_hash())
-//        );
-//        String token = jwtTokenProvider.CreateToken(requestDto.getEmail());
-//        String token = userService.login(requestDto);
-//        return ResponseEntity.ok(new LoginResponseDto(token));
-//    }
 
     // 로그아웃
     @PostMapping("/logout")
