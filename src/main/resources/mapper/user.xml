@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.samuL.mapper.UserMapper">
+<mapper namespace="com.example.samuL.user.mapper.UserMapper">
     <!--회원가입-->
-    <insert id="signupUser" parameterType="com.example.samuL.dto.UserDto">
+    <insert id="signupUser" parameterType="com.example.samuL.user.dto.UserDto">
         insert into users
         values( #{id},
         #{email},
@@ -28,7 +28,7 @@
     </select>
 
     <!-- 로그인 시 이메일 확인 -->
-    <select id = "findByEmail" parameterType="com.example.samuL.dto.UserDto">
+    <select id = "findByEmail" parameterType="com.example.samuL.user.dto.UserDto">
         select *
         from users
         where email = #{email}
@@ -42,7 +42,7 @@
     </delete>
 
     <!-- 회원정보 수정 -->
-    <update id = "updateUser" parameterType="com.example.samuL.dto.UpdateUserDto">
+    <update id = "updateUser" parameterType="com.example.samuL.user.dto.UpdateUserDto">
         update users
         set
             nickname = #{nickname},
@@ -51,7 +51,7 @@
     </update>
 
     <!-- 비밀번호 변경 -->
-    <update id = "updatePassword" parameterType="com.example.samuL.dto.PasswordUpdateDto">
+    <update id = "updatePassword" parameterType="com.example.samuL.user.dto.PasswordUpdateDto">
         update users
         set password_hash = #{newPassword}
         where email = #{email}

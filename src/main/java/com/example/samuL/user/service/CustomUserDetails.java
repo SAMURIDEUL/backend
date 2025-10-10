@@ -1,4 +1,4 @@
-package com.example.samuL.service;
+package com.example.samuL.user.service;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

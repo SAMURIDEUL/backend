@@ -9,4 +9,5 @@ public interface AuthService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto);
     public TokenResponseDto refreshAccessToken(String refreshToken);
+    public void logout(String token, String currentEmail);
 }

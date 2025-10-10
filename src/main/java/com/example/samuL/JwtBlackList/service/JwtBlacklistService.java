@@ -1,8 +1,8 @@
-package com.example.samuL.service;
+package com.example.samuL.JwtBlackList.service;
 
 
-import com.example.samuL.dto.JwtBlacklistDto;
-import com.example.samuL.mapper.JwtBlacklistMapper;
+import com.example.samuL.JwtBlackList.dto.JwtBlacklistDto;
+import com.example.samuL.JwtBlackList.mapper.JwtBlacklistMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

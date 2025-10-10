@@ -1,11 +1,12 @@
 package com.example.samuL.auth.service;
 
+import com.example.samuL.JwtBlackList.service.JwtBlacklistService;
 import com.example.samuL.auth.dto.*;
 import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.auth.mapper.AuthMapper;
 import com.example.samuL.auth.mapper.RefreshTokenMapper;
-import com.example.samuL.dto.JwtBlacklistDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,8 @@ public class AuthServiceImpl implements AuthService{
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private JwtBlacklistService jwtBlacklistService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
@@ -70,5 +73,24 @@ public class AuthServiceImpl implements AuthService{
        String newAccessToken = jwtTokenProvider.CreateToken(email);
 
        return new TokenResponseDto(newAccessToken, refreshToken);
+    }
+
+
+    @Override
+    public void logout(String token, String currentEmail){
+        if(token == null){
+            throw new IllegalArgumentException("Invalid token");
+        }
+
+        String email = jwtTokenProvider.extractEmail(token);
+        if(!email.equals(currentEmail)){
+            throw new AccessDeniedException("User mismatch. Cannot logout");
+        }
+        // refresh 토큰 삭제
+        refreshTokenMapper.deleteByEmail(email);
+
+        //access 토큰 블랙리스트 등록
+        LocalDateTime expiration = jwtTokenProvider.getExpiration(token);
+        jwtBlacklistService.addTokenToBlacklist(token, expiration);
     }
 }

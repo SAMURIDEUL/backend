@@ -1,8 +1,7 @@
-package com.example.samuL.mapper;
+package com.example.samuL.user.mapper;
 
-import com.example.samuL.dto.PasswordUpdateDto;
-import com.example.samuL.dto.UpdateUserDto;
-import com.example.samuL.dto.UserDto;
+import com.example.samuL.user.dto.PasswordUpdateDto;
+import com.example.samuL.user.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -13,4 +12,5 @@ public interface UserMapper {
     public UserDto findByEmail(String email);
     public int updateUser(UserDto userDto);
     public int updatePassword(PasswordUpdateDto passwordUpdateDto);
+    public int deleteUser(String email);
 }

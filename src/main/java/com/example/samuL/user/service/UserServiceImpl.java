@@ -1,10 +1,11 @@
-package com.example.samuL.service;
+package com.example.samuL.user.service;
 
-import com.example.samuL.dto.*;
+import com.example.samuL.JwtBlackList.service.JwtBlacklistService;
 import com.example.samuL.auth.jwt.JwtTokenProvider;
-import com.example.samuL.mapper.UserMapper;
+import com.example.samuL.auth.mapper.RefreshTokenMapper;
+import com.example.samuL.user.mapper.UserMapper;
+import com.example.samuL.user.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -21,6 +22,8 @@ public class UserServiceImpl implements UserService{
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private JwtBlacklistService jwtBlacklistService;
+    @Autowired
+    private RefreshTokenMapper refreshTokenMapper;
 
     //회원가입
     @Override
@@ -41,39 +44,6 @@ public class UserServiceImpl implements UserService{
         return userMapper.countNickname(nickname) > 0;
     }
 
-
-    // 로그인
-//    @Override
-//    public String login(LoginRequestDto loginRequestDto){
-//        UserDto userDto = userMapper.findByEmail(loginRequestDto.getEmail());
-//        if(userDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), userDto.getPassword_hash())){
-//            throw new RuntimeException("이메일이나 비밀번호가 맞지 않습니다.");
-//        }
-//        return jwtTokenProvider.CreateToken(userDto.getEmail());
- //   }
-
-    // 로그아웃    @Override
-    //    public String login(LoginRequestDto loginRequestDto){
-    //        UserDto userDto = userMapper.findByEmail(loginRequestDto.getEmail());
-    //        if(userDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), userDto.getPassword_hash())){
-    //            throw new RuntimeException("이메일이나 비밀번호가 맞지 않습니다.");
-    //        }
-    //        return jwtTokenProvider.CreateToken(userDto.getEmail());
-    //    }
-    @Override
-    public void logout(String token, String currentEmail){
-        if(token == null){
-            throw new IllegalArgumentException("Invalid token");
-        }
-
-        String email = jwtTokenProvider.extractEmail(token);
-        if(!email.equals(currentEmail)){
-            throw new AccessDeniedException("User mismatch. Cannot logout");
-        }
-
-        LocalDateTime expiration = jwtTokenProvider.getExpiration(token);
-        jwtBlacklistService.addTokenToBlacklist(token, expiration);
-    }
 
     // 회원정보 조회
     @Override
@@ -121,8 +91,30 @@ public class UserServiceImpl implements UserService{
         passwordUpdateDto.setNewPassword(encodedNewpassword);
         userMapper.updatePassword(passwordUpdateDto);
 
+        // refresh token 삭제
+        refreshTokenMapper.deleteByEmail(email);
+
+        //access token 블랙리스트 등록
         LocalDateTime expiry = jwtTokenProvider.getExpiration(token);
         jwtBlacklistService.addTokenToBlacklist(token, expiry);
+    }
+
+    @Override
+    public void deleteUser(String accessToken){
+        if(!jwtTokenProvider.isValidateToken(accessToken)){
+            throw new RuntimeException("유효하지 않는 토큰입니다.");
+        }
+        String email = jwtTokenProvider.extractEmail(accessToken);
+
+        // 사용자 정보(DB) 삭제
+        userMapper.deleteUser(email);
+
+        //refresh token 삭제
+        refreshTokenMapper.deleteByEmail(email);
+
+        //access token 블랙리스트 등록
+        LocalDateTime expiry = jwtTokenProvider.getExpiration(accessToken);
+        jwtBlacklistService.addTokenToBlacklist(accessToken, expiry);
     }
 
 

@@ -1,6 +1,6 @@
-package com.example.samuL.mapper;
+package com.example.samuL.JwtBlackList.mapper;
 
-import com.example.samuL.dto.JwtBlacklistDto;
+import com.example.samuL.JwtBlackList.dto.JwtBlacklistDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

@@ -1,17 +1,14 @@
-package com.example.samuL.service;
+package com.example.samuL.user.service;
 
 
-import com.example.samuL.dto.UserDto;
-import com.example.samuL.mapper.UserMapper;
+import com.example.samuL.user.dto.UserDto;
+import com.example.samuL.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor

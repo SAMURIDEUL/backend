@@ -1,4 +1,4 @@
-package com.example.samuL.dto;
+package com.example.samuL.user.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

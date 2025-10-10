@@ -1,8 +1,11 @@
 package com.example.samuL.user.controller;
 
-import com.example.samuL.dto.*;
 import com.example.samuL.auth.jwt.JwtTokenProvider;
-import com.example.samuL.service.UserService;
+import com.example.samuL.user.service.UserService;
+import com.example.samuL.user.dto.ChangePasswordRequestDto;
+import com.example.samuL.user.dto.MyInfoDto;
+import com.example.samuL.user.dto.UpdateUserDto;
+import com.example.samuL.user.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,26 +79,6 @@ public class UserController {
     }
 
 
-    // 로그아웃
-    @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, Authentication authentication){
-        Map<String, String> response = new HashMap<>();
-        String token = jwtTokenProvider.resolveToken(request);
-
-
-//        if(authentication == null){
-//            response.put("error", "Authentication is missing");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); //401
-//        }
-
-        String currentEmail = authentication.getName();
-
-
-        userService.logout(token, currentEmail);
-        response.put("message", "로그아웃 성공");
-        return ResponseEntity.ok(response);
-    }
-
     // 회원정보 조회
     @GetMapping("/info")
     public ResponseEntity<MyInfoDto> getMyInfo(Authentication authentication){
@@ -130,11 +113,15 @@ public class UserController {
 
     }
 
-
-
     // 회원 탈퇴
-
-
-
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String authorizationHeader){
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 헤더");
+        }
+        String accessToken = authorizationHeader.substring(7);
+        userService.deleteUser(accessToken);
+        return ResponseEntity.ok("회원 탈퇴 완료");
+    }
 }
 

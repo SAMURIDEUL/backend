@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.samuL.mapper.JwtBlacklistMapper">
+<mapper namespace="com.example.samuL.JwtBlackList.mapper.JwtBlacklistMapper">
 
-    <insert id = "insert" parameterType="com.example.samuL.dto.JwtBlacklistDto">
+    <insert id = "insert" parameterType="com.example.samuL.JwtBlackList.dto.JwtBlacklistDto">
         insert into jwt_blacklist (token, expired_at, created_at)
         values(#{token}, #{expired_at}, #{created_at})
     </insert>

@@ -1,9 +1,8 @@
-package com.example.samuL.dto;
+package com.example.samuL.JwtBlackList.dto;
 
 
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
