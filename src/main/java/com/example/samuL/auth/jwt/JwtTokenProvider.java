@@ -20,14 +20,16 @@ public class JwtTokenProvider {
 
     private final Key key;
     //jwt 만료 시간 1시간
-    private final long JWT_TOKEN_TIME = (long) 1000 * 60 * 30;
+    private final long JWT_TOKEN_TIME = 1000L * 60 * 60;
+    //refresh token 만료 시간 7일
+    private final long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 7;
 
     //secret 키
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey){
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    // create access token
+    // access token
     public String CreateToken(String email){
         Date now = new Date(); //토큰 발급 시간
         Date Validity = new Date(now.getTime() + JWT_TOKEN_TIME); // 토큰 만료 시간
@@ -40,6 +42,18 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // refresh token
+    public String createRefreshToken(String email){
+        Date now = new Date();
+        Date expriryDate = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expriryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
 
     //Jwt 토큰에서 사용자 email 추출
@@ -51,6 +65,7 @@ public class JwtTokenProvider {
                 .getBody()
                 .getSubject();
     }
+
 
     //jwt 유효성 체크
     public void validateToken(String token) throws JwtAuthenticationException{
@@ -87,6 +102,7 @@ public class JwtTokenProvider {
 //        }
 
     }
+
 
     //jwt 토큰 만료시간 추출
     public LocalDateTime getExpiration(String token){

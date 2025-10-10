@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.samuL.auth.mapper.RefreshTokenMapper">
+
+    <insert id="insert" parameterType="com.example.samuL.auth.dto.RefreshTokenDto">
+        insert into refresh_token
+        values( #{id},
+        #{email},
+        #{refreshToken},
+        #{expired_at},
+        #{created_at}
+        )
+    </insert>
+
+    <delete id="deleteByEmail" parameterType="string">
+        delete
+        from refresh_token
+        where email = #{email}
+    </delete>
+
+    <select id="findByEmail" parameterType="string" resultType="com.example.samuL.auth.dto.RefreshTokenDto">
+        select *
+        from refresh_token
+        where email = #{email}
+    </select>
+
+
+</mapper>

@@ -5,6 +5,7 @@
 
 <mapper namespace="com.example.samuL.auth.mapper.AuthMapper">
 
+    <!-- 로그인 시 이메일 확인 -->
     <select id="findEmail" parameterType="com.example.samuL.auth.dto.LoginUserDto">
         select *
         from users

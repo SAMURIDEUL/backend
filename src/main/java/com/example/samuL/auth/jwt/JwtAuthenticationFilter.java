@@ -50,14 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-
         String token = authHeader.substring(7);
-//        if (jwtBlacklistService.isTokenBlacklisted(token)) {
-////            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-////            response.getWriter().write("This token is blacklist token.");
-////            return;
-//            throw new JwtAuthenticationException("This token is blacklisted");
-//        }
 
         try {
 //            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -70,8 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new JwtAuthenticationException("This token is blacklisted");
             }
 
- //           String token = authHeader.substring(7);
-            jwtTokenProvider.validateToken(token); // 여기서 예외 던짐
+            jwtTokenProvider.validateToken(token);
 
             String email = jwtTokenProvider.extractEmail(token);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
