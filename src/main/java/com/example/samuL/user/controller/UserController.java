@@ -1,6 +1,7 @@
 package com.example.samuL.user.controller;
 
 import com.example.samuL.auth.jwt.JwtTokenProvider;
+import com.example.samuL.common.exception.custom.DuplicateException;
 import com.example.samuL.user.service.UserService;
 import com.example.samuL.user.dto.ChangePasswordRequestDto;
 import com.example.samuL.user.dto.MyInfoDto;
@@ -36,15 +37,14 @@ public class UserController {
         boolean isDuplicate = userService.isEmailDuplicate(email);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("email", email);
-        response.put("isDupicate", isDuplicate);
 
         if(isDuplicate){
-            response.put("message", "Email is already registered");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            throw new DuplicateException("이메일이 중복되어 사용이 불가능 합니다.");
         }
 
-        response.put("message", "Email is available");
+        response.put("email", email);
+        response.put("isDupicate", isDuplicate);
+        response.put("message", "사용 가능한 이메일입니다.");
         return ResponseEntity.ok(response);
     }
 
@@ -57,15 +57,14 @@ public class UserController {
         boolean isDuplicate = userService.isNicknameDuplicate(nickname);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("nickname", nickname);
-        response.put("isDuplicate", isDuplicate);
+
 
         if(isDuplicate){
-            response.put("message", "Nickname is already registered");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            throw new DuplicateException("닉네임이 중복되어 사용 불가능합니다.");
         }
-
-        response.put("message", "Nickname is available");
+        response.put("nickname", nickname);
+        response.put("isDuplicate", isDuplicate);
+        response.put("message", "사용 가능한 닉네임 입니다.");
         return ResponseEntity.ok(response);
 
     }
@@ -74,7 +73,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@RequestBody UserDto userDto){
         userService.signupUser(userDto);
-        return "User registration successful";
+        return "회원가입에 성공했습니다.";
 
     }
 
@@ -104,9 +103,6 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(HttpServletRequest request, @RequestBody ChangePasswordRequestDto changePasswordRequestDto){
         String token = jwtTokenProvider.resolveToken(request);
-        if(token == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 없습니다");
-        }
 
         userService.changePassword(token, changePasswordRequestDto);
         return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요");

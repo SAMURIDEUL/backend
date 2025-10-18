@@ -1,4 +1,4 @@
-package com.example.samuL.common.exception;
+package com.example.samuL.common.exception.jwtAuth;
 
 import org.springframework.security.core.AuthenticationException;
 

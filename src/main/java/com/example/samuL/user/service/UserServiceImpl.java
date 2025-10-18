@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public MyInfoDto getMyInfoByEmail(String email){
         UserDto userDto = userMapper.findByEmail(email);
         if(userDto == null){
-            throw new UsernameNotFoundException("Email not found");
+            throw new UsernameNotFoundException("이메일을 찾을 수 없습니다.");
         }
         return new MyInfoDto(userDto.getEmail(), userDto.getNickname(), userDto.getCreated_at(), userDto.getUpdated_at());
     }
@@ -59,10 +59,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(String email, UpdateUserDto updateUserDto){
         UserDto userDto = userMapper.findByEmail(email);
-        if(userDto == null){
-            throw new UsernameNotFoundException("Email not found");
-        }
 
+        String newNickname = updateUserDto.getNickname();
+        if(newNickname == null || newNickname.trim().isEmpty()){
+            throw new IllegalArgumentException("닉네임이 비어 있습니다.");
+        }
         userDto.setNickname(updateUserDto.getNickname());
         userDto.setUpdated_at(LocalDateTime.now().withNano(0));
         userMapper.updateUser(userDto);
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime expiry = jwtTokenProvider.getExpiration(token);
         jwtBlacklistService.addTokenToBlacklist(token, expiry);
     }
-
+    // 회원 삭제
     @Override
     public void deleteUser(String accessToken){
         if(!jwtTokenProvider.isValidateToken(accessToken)){

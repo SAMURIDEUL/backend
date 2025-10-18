@@ -1,6 +1,6 @@
 package com.example.samuL.common.config;
 
-import com.example.samuL.common.exception.JwtAuthenticationEntryPoint;
+import com.example.samuL.common.exception.jwtAuth.JwtAuthenticationEntryPoint;
 import com.example.samuL.auth.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests(auth->auth.requestMatchers("/error","/login","/users/**").permitAll())
+        http.authorizeHttpRequests(auth->auth
+                        .requestMatchers("/error","/login","/users/**")
+                        .permitAll().anyRequest().authenticated())
                 .csrf(csrf->csrf.disable())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

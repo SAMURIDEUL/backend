@@ -2,7 +2,7 @@ package com.example.samuL.auth.jwt;
 
 
 
-import com.example.samuL.common.exception.JwtAuthenticationException;
+import com.example.samuL.common.exception.jwtAuth.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final Key key;
-    //jwt 만료 시간 1시간
+    //jwt 만료 시간 1시간(1000L * 60 * 60)
     private final long JWT_TOKEN_TIME = 1000L * 60 * 60;
     //refresh token 만료 시간 7일
     private final long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 7;
@@ -89,9 +89,18 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException e) {
             throw new JwtAuthenticationException("토큰이 만료되었습니다.", e);
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("유효하지 않은 토큰입니다.", e);
+        }catch (MalformedJwtException e) {
+            throw new JwtAuthenticationException("토큰 형식이 올바르지 않습니다.", e);
+        } catch (SignatureException e) {
+            throw new JwtAuthenticationException("토큰 서명이 유효하지 않습니다.", e);
+        } catch (UnsupportedJwtException e) {
+            throw new JwtAuthenticationException("지원하지 않는 토큰 형식입니다.", e);
+        } catch (IllegalArgumentException e) {
+            throw new JwtAuthenticationException("토큰이 비어있거나 잘못되었습니다.", e);
         }
+//        catch (JwtException | IllegalArgumentException e) {
+//            throw new JwtAuthenticationException("유효하지 않은 토큰입니다.", e);
+//        }
 //        Jwts.parserBuilder()
 //                .setSigningKey(key)
 //                .build()
@@ -113,7 +122,6 @@ public class JwtTokenProvider {
 //        catch(JwtException | IllegalArgumentException e){
 //            return false;
 //        }
-
     }
 
 
