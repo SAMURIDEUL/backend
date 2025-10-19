@@ -5,13 +5,10 @@ import com.example.samuL.auth.dto.*;
 import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.auth.mapper.AuthMapper;
 import com.example.samuL.auth.mapper.RefreshTokenMapper;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -32,10 +29,6 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
         LoginUserDto loginUserDto = authMapper.findEmail(loginRequestDto.getEmail());
-
-//        if(loginUserDto == null || !passwordEncoder.matches(loginRequestDto.getPassword_hash(), loginUserDto.getPassword_hash())){
-//            throw new RuntimeException("이메일이나 비번이 틀렸습니다.");
-//        }
 
         if(loginUserDto == null){
             throw new RuntimeException("이메일이 틀렸습니다.");

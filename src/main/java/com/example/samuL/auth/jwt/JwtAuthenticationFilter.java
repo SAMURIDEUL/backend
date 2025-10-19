@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final List<String> WHITELIST = List.of(
             "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname"
+            , "/categories"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

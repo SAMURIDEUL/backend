@@ -7,6 +7,7 @@ import com.example.samuL.auth.dto.LoginResponseDto;
 import com.example.samuL.auth.dto.TokenResponseDto;
 import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.auth.service.AuthService;
+import com.example.samuL.common.okResponse.OkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,27 +28,41 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<OkResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto
+            , HttpServletRequest request){
         LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
-        return ResponseEntity.ok(loginResponseDto);
+        String path = request.getRequestURI();
+        return ResponseEntity.ok(OkResponse.success("로그인 성공", loginResponseDto, path));
     }
+
+
+
 
     //refresh token을 통한 access token 재발급
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponseDto> refreshAccessToken(@RequestHeader("Authorization") String bearerToken){
+    public ResponseEntity<OkResponse<TokenResponseDto>> refreshAccessToken(@RequestHeader("Authorization") String bearerToken
+            , HttpServletRequest request){
         String refreshToken = bearerToken.replace("Bearer ", "");
         TokenResponseDto tokenResponseDto = authService.refreshAccessToken(refreshToken);
-        return ResponseEntity.ok(tokenResponseDto);
+        return ResponseEntity.ok(OkResponse.success("access 토큰 재발급 성공", tokenResponseDto, request.getRequestURI()));
     }
+//    public ResponseEntity<TokenResponseDto> refreshAccessToken(@RequestHeader("Authorization") String bearerToken){
+//        String refreshToken = bearerToken.replace("Bearer ", "");
+//        TokenResponseDto tokenResponseDto = authService.refreshAccessToken(refreshToken);
+//        return ResponseEntity.ok(tokenResponseDto);
+//    }
+
+
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, Authentication authentication){
+    public ResponseEntity<OkResponse<Void>> logout(HttpServletRequest request, Authentication authentication){
         Map<String, String> response = new HashMap<>();
         String token = jwtTokenProvider.resolveToken(request);
         String currentEmail = authentication.getName();
         authService.logout(token, currentEmail);
-        response.put("message", "로그아웃 성공");
-        return ResponseEntity.ok(response);
+
+
+        return ResponseEntity.ok(OkResponse.success("로그아웃 성공", request.getRequestURI()));
     }
 
 
