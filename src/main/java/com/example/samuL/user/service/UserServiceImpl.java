@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signupUser(UserDto userDto){
         userDto.setPassword_hash(passwordEncoder.encode(userDto.getPassword_hash()));
+        userDto.setCreated_at(LocalDateTime.now().withNano(0));
+        userDto.setUpdated_at(LocalDateTime.now().withNano(0));
         userMapper.signupUser(userDto);
     }
 
