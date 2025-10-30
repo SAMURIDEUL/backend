@@ -10,6 +10,7 @@ public interface PlaceService {
                                  String city,
                                  String district,
                                  String subdistrict,
+                                 String keyword,
                                  BigInteger lastId,
                                  int size);
 }

@@ -21,11 +21,12 @@ public class PlaceController {
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
             @RequestParam(required = false) String subdistrict,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false)BigInteger lastId,
             @RequestParam(defaultValue = "20") int size
             ){
 
-        PlaceScrollResponse response = placeService.getPlace(categoryId, city, district, subdistrict,lastId, size);
+        PlaceScrollResponse response = placeService.getPlace(categoryId, city, district, subdistrict, keyword, lastId, size);
         return ResponseEntity.ok(response);
 
     }

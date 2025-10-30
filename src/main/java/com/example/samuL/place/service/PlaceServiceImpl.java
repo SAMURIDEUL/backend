@@ -19,9 +19,10 @@ public class PlaceServiceImpl implements PlaceService{
                                         String city,
                                         String district,
                                         String subdistrict,
+                                        String keyword,
                                         BigInteger lastId,
                                         int size){
-        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, lastId, size + 1);
+        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, lastId, size + 1);
         boolean hasNext = false;
         if(places.size() > size){
             hasNext = true;

@@ -30,6 +30,9 @@
         <if test="subdistrict != null and subdistrict != ''">
             and subdistrict = #{subdistrict}
         </if>
+        <if test="keyword != null">
+            and name like concat('%', #{keyword}, '%')
+        </if>
         <if test="lastId != null">
             and id &gt; #{lastId}
         </if>

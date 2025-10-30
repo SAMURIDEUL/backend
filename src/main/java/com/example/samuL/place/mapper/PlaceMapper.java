@@ -17,6 +17,7 @@ public interface PlaceMapper {
             @Param("city") String city,
             @Param("district") String district,
             @Param("subdistrict") String subdistrict,
+            @Param("keyword") String keyword,
             @Param("lastId") BigInteger lastId,
             @Param("pageSize") int pageSize
 
