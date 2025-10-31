@@ -23,6 +23,8 @@ public class PlaceDto {
 
     private String updatedAt;
     private Integer categoryId; // 카테고리 아이디
+
+    private PetPolicyDto petPolicy;
 }
 
 //CREATE TABLE places (

@@ -4,6 +4,7 @@ package com.example.samuL.place.mapper;
 import com.example.samuL.place.dto.PlaceDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -22,4 +23,9 @@ public interface PlaceMapper {
             @Param("pageSize") int pageSize
 
     );
+
+    @Select("SELECT COUNT(*) FROM places")
+    long getTotalCount();
+
+    PlaceDto getPlaceByOffset(@Param("offset") long offset);
 }
