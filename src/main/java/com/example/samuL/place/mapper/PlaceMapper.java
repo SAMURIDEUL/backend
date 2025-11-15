@@ -28,4 +28,5 @@ public interface PlaceMapper {
     long getTotalCount();
 
     PlaceDto getPlaceByOffset(@Param("offset") long offset);
+
 }

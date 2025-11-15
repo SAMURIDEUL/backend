@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PetPolicyDto {
+    private Long placeId;
     private Boolean petAllowed;
     private String petSizeLimit;
     private Boolean indoorFlag;

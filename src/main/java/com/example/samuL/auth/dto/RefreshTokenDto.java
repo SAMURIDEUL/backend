@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class RefreshTokenDto {
-    private BigInteger id;
+    private Long id;
     private String email;
     private String refreshToken;
     private LocalDateTime expired_at;

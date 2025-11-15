@@ -16,5 +16,10 @@ public interface PlaceService {
                                  BigInteger lastId,
                                  int size);
 
+    // place 랜덤 6개 조회
     public List<PlaceDto> getRandomPlaces();
+
+    //리뷰와 사진과 함께 조회
+   // public PlaceDetailDto getPlaceDetail(Long placeId);
+
 }

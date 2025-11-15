@@ -2,7 +2,10 @@ package com.example.samuL.place.service;
 
 import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlaceScrollResponse;
+
 import com.example.samuL.place.mapper.PlaceMapper;
+
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +68,11 @@ public class PlaceServiceImpl implements PlaceService{
         }
         return places;
     }
+
+//    @Override
+//    public PlaceDetailDto getPlaceDetail(Long placeId){
+//        return placeDetailMapper.findPlaceDetailById(placeId);
+//    }
+
 
 }

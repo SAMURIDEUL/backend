@@ -3,10 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.samuL.review.mapper.ReviewMapper">
+    <insert id="insertReview" parameterType="com.example.samuL.review.dto.ReviewDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO reviews (place_id, user_id, rating, content, visit_date)
+        VALUES (#{placeId}, #{userId}, #{rating}, #{content}, #{visitDate})
+    </insert>
 
+    <insert id="insertReviewPhoto" parameterType="com.example.samuL.review.dto.ReviewPhotoDto">
+        INSERT INTO review_photos (review_id, photo_url)
+        VALUES (#{reviewId}, #{photoUrl})
+    </insert>
 
-
-
-
-
+    <select id="findReviewsByPlaceId" parameterType="long" resultType="com.example.samuL.review.dto.ReviewDto">
+        SELECT id, place_id AS placeId, user_id AS userId, rating, content, visit_date AS visitDate, created_at
+        FROM reviews
+        WHERE place_id = #{placeId}
+        ORDER BY created_at DESC
+    </select>
 </mapper>

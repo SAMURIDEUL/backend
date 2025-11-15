@@ -133,6 +133,8 @@
         LIMIT #{offset}, 1
     </select>
 
+
+
 <!--    <select id="getPlaceByOffset" parameterType="long" resultType="com.example.samuL.place.dto.PlaceDto">-->
 <!--        select-->
 <!--        id,-->
