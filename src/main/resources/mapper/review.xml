@@ -3,11 +3,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.samuL.review.mapper.ReviewMapper">
+
+    <!-- 리뷰 작성 -->
     <insert id="insertReview" parameterType="com.example.samuL.review.dto.ReviewDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO reviews (place_id, user_id, rating, content, visit_date)
         VALUES (#{placeId}, #{userId}, #{rating}, #{content}, #{visitDate})
     </insert>
-
+    <!-- 리뷰 작성(사진 -->
     <insert id="insertReviewPhoto" parameterType="com.example.samuL.review.dto.ReviewPhotoDto">
         INSERT INTO review_photos (review_id, photo_url)
         VALUES (#{reviewId}, #{photoUrl})
@@ -19,4 +21,46 @@
         WHERE place_id = #{placeId}
         ORDER BY created_at DESC
     </select>
+
+    <!-- 리뷰 사진 조회 -->
+    <select id="selectReviewPhotos" resultType="com.example.samuL.review.dto.ReviewPhotoDto">
+        SELECT
+        id,
+        review_id AS reviewId,
+        photo_url AS photoUrl,
+        created_at AS createdAt
+        FROM review_photos
+        WHERE review_id = #{reviewId}
+    </select>
+
+    <!-- 리뷰 수정 시 리뷰 단독 조회 -->
+    <select id="findById" resultType="com.example.samuL.review.dto.ReviewWithPhotosDto">
+        SELECT
+        id,
+        place_id AS placeId,
+        user_id AS userId,
+        rating,
+        content,
+        visit_date AS visitDate,
+        created_at AS createdAt,
+        updated_at AS updatedAt
+        FROM reviews
+        WHERE id = #{reviewId}
+    </select>
+
+    <!-- 리뷰 내용 수정 -->
+    <update id="updateReview">
+        UPDATE reviews
+        SET rating = #{rating},
+        content = #{content},
+        visit_date = #{visitDate},
+        updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 리뷰 사진 삭제 -->
+    <delete id="deletePhotoById">
+        DELETE FROM review_photos WHERE id = #{id}
+    </delete>
+
 </mapper>

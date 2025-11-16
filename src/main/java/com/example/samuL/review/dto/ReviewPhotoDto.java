@@ -7,5 +7,4 @@ public class ReviewPhotoDto {
     private Long id;
     private Long reviewId;
     private String photoUrl;
-
 }

@@ -1,6 +1,8 @@
 package com.example.samuL.review.controller;
 
 import com.example.samuL.review.dto.ReviewDto;
+import com.example.samuL.review.dto.ReviewUpdateResponse;
+import com.example.samuL.review.dto.ReviewWithPhotosDto;
 import com.example.samuL.review.service.ReviewService;
 import com.example.samuL.user.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,20 @@ public class ReviewController {
     ) {
         List<ReviewDto> reviews = reviewService.getReviewsByPlace(placeId);
         return ResponseEntity.ok(reviews);
+    }
+
+    @PutMapping(value = "/{reviewId}", consumes = "multipart/form-data")
+    public ResponseEntity<ReviewUpdateResponse> updateReview(
+            @PathVariable Long placeId,
+            @PathVariable Long reviewId,
+            @RequestPart("review") ReviewWithPhotosDto reviewWithPhotosDto,
+            @RequestPart(value = "keepImageIds", required = false) List<Long> keepImageIds,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+            Authentication authentication
+    ) throws IOException{
+        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
+        ReviewUpdateResponse updated = reviewService.updateReview(reviewId, reviewWithPhotosDto, keepImageIds, newImages, userId);
+        return ResponseEntity.ok(updated);
     }
 
 }
