@@ -7,12 +7,14 @@ import com.example.samuL.review.dto.ReviewUpdateResponse;
 import com.example.samuL.review.dto.ReviewWithPhotosDto;
 import com.example.samuL.review.mapper.ReviewMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -143,5 +145,18 @@ public class ReviewServiceImpl implements ReviewService{
         return response;
         //return updated;
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteReview(Long reviewId, Long userId){
+        Long ownerId = reviewMapper.findReviewOwner(reviewId);
+        if (ownerId == null){
+            throw new IllegalArgumentException("존재하지 않는 리뷰입니다.");
+        }
+        if(!ownerId.equals(userId)){
+            throw new AccessDeniedException("본인 리뷰만 삭제할 수 있습니다.");
+        }
+        reviewMapper.deleteReview(reviewId);
     }
 }

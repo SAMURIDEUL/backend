@@ -1,10 +1,12 @@
 package com.example.samuL.review.controller;
 
+import com.example.samuL.common.okResponse.OkResponse;
 import com.example.samuL.review.dto.ReviewDto;
 import com.example.samuL.review.dto.ReviewUpdateResponse;
 import com.example.samuL.review.dto.ReviewWithPhotosDto;
 import com.example.samuL.review.service.ReviewService;
 import com.example.samuL.user.service.CustomUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -56,6 +58,16 @@ public class ReviewController {
         Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
         ReviewUpdateResponse updated = reviewService.updateReview(reviewId, reviewWithPhotosDto, keepImageIds, newImages, userId);
         return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<OkResponse<Void>> deleteReview(@PathVariable Long reviewId, Authentication authentication
+            , HttpServletRequest request){
+        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
+
+        reviewService.deleteReview(reviewId, userId);
+
+        return ResponseEntity.ok(OkResponse.success("리뷰 삭제 완료", request.getRequestURI()));
     }
 
 }

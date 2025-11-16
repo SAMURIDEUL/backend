@@ -63,4 +63,17 @@
         DELETE FROM review_photos WHERE id = #{id}
     </delete>
 
+    <!-- 리뷰 주인 찾기(리뷰 삭제)-->
+    <select id="findReviewOwner" resultType="long">
+        SELECT user_id
+        FROM reviews
+        WHERE id = #{reviewId}
+    </select>
+
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview">
+        DELETE FROM reviews
+        WHERE id = #{reviewId}
+    </delete>
+
 </mapper>

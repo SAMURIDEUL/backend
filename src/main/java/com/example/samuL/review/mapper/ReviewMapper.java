@@ -25,5 +25,8 @@ public interface ReviewMapper {
     //리뷰 사진 삭제
     void deletePhotoById(@Param("id") Long photoId);
 
+    //리뷰 사진 삭제
+    Long findReviewOwner(Long reviewId);
+    int deleteReview(Long reviewId);
 
 }

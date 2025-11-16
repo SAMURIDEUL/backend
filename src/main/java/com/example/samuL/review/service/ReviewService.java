@@ -18,4 +18,6 @@ public interface ReviewService {
                                       List<Long> keepImageIds,
                                       List<MultipartFile> newImages,
                                       Long userId) throws IOException;
+    // 리뷰 삭제
+    void deleteReview(Long reviewId, Long userId);
 }
