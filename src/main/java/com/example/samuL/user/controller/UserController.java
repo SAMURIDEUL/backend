@@ -4,6 +4,10 @@ import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.common.exception.custom.DuplicateException;
 import com.example.samuL.common.exception.custom.HeaderException;
 import com.example.samuL.common.okResponse.OkResponse;
+import com.example.samuL.review.dto.ReviewPaginatedResponse;
+import com.example.samuL.review.dto.ReviewResponse;
+import com.example.samuL.review.service.ReviewService;
+import com.example.samuL.user.service.CustomUserDetails;
 import com.example.samuL.user.service.UserService;
 import com.example.samuL.user.dto.ChangePasswordRequestDto;
 import com.example.samuL.user.dto.MyInfoDto;
@@ -29,8 +33,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private final ReviewService reviewService;
+
   //  private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+
 
     // 이메일 중복 체크
     @PostMapping("/check-email")
@@ -120,6 +127,18 @@ public class UserController {
         String accessToken = authorizationHeader.substring(7);
         userService.deleteUser(accessToken);
         return ResponseEntity.ok(OkResponse.success("회원 탈퇴 완료", request.getRequestURI()));
+    }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<ReviewPaginatedResponse<ReviewResponse>> getMyReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication
+    ){
+        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
+
+        ReviewPaginatedResponse<ReviewResponse> reviews = reviewService.getUserReviews(userId, page, size);
+        return ResponseEntity.ok(reviews);
     }
 }
 

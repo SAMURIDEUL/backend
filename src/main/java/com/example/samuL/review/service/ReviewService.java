@@ -1,8 +1,6 @@
 package com.example.samuL.review.service;
 
-import com.example.samuL.review.dto.ReviewDto;
-import com.example.samuL.review.dto.ReviewUpdateResponse;
-import com.example.samuL.review.dto.ReviewWithPhotosDto;
+import com.example.samuL.review.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,4 +18,7 @@ public interface ReviewService {
                                       Long userId) throws IOException;
     // 리뷰 삭제
     void deleteReview(Long reviewId, Long userId);
+
+    // 자신이 작성한 리뷰 조회
+    ReviewPaginatedResponse<ReviewResponse> getUserReviews(Long userId, int page, int size);
 }

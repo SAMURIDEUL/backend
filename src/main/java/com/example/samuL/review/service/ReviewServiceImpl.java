@@ -1,10 +1,7 @@
 package com.example.samuL.review.service;
 
 import com.example.samuL.common.properties.FileStorageProperties;
-import com.example.samuL.review.dto.ReviewDto;
-import com.example.samuL.review.dto.ReviewPhotoDto;
-import com.example.samuL.review.dto.ReviewUpdateResponse;
-import com.example.samuL.review.dto.ReviewWithPhotosDto;
+import com.example.samuL.review.dto.*;
 import com.example.samuL.review.mapper.ReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,7 +17,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -158,5 +157,32 @@ public class ReviewServiceImpl implements ReviewService{
             throw new AccessDeniedException("본인 리뷰만 삭제할 수 있습니다.");
         }
         reviewMapper.deleteReview(reviewId);
+    }
+
+    // 자신이 작성한 리뷰 조회
+    @Override
+    public ReviewPaginatedResponse<ReviewResponse> getUserReviews(Long userId, int page, int size){
+        int offset = page * size;
+
+        // 리뷰 조회
+        List<ReviewResponse> reviews = reviewMapper.getUserReviews(userId, offset, size);
+
+        if (!reviews.isEmpty()){
+            List<Long> reviewIds = reviews.stream().map(ReviewResponse::getId).toList();
+
+            // 사진 조회
+            List<ReviewPhotoDto> photos = reviewMapper.getPhotosByReviewIds(reviewIds);
+            // Map으로 매핑
+            Map<Long, List<String>> photoMap = photos.stream().collect(Collectors.groupingBy(ReviewPhotoDto::getReviewId,
+                    Collectors.mapping(ReviewPhotoDto::getPhotoUrl, Collectors.toList())));
+            // 리뷰에 사진 연결
+            reviews.forEach(r->r.setPhotoUrls(photoMap.getOrDefault(r.getId(), List.of())));
+        }
+
+        long total = reviewMapper.countUserReviews(userId);
+        int totalPages = (int)Math.ceil((double) total / size);
+
+        return new ReviewPaginatedResponse<>(reviews, page, size, total, totalPages);
+
     }
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.samuL.place.mapper.PlaceReviewMapper">
+
+    <select id="getPlaceById" resultType="com.example.samuL.place.dto.PlacePlaceDto">
+        SELECT
+        id,
+        name,
+        category3 AS category3,
+        city,
+        district,
+        subdistrict,
+        road_address AS roadAddress,
+        postal_code AS postalCode,
+        phone,
+        lat,
+        lon,
+        updated_at AS updatedAt,
+        category_id AS categoryId
+        FROM places
+        WHERE id = #{placeId}
+    </select>
+    <!-- 리뷰 목록 (무한 스크롤) -->
+    <select id="getReviewsByPlacePaged" resultType="com.example.samuL.place.dto.PlaceReviewDto">
+        SELECT
+        id,
+        place_id AS placeId,
+        user_id AS userId,
+        rating,
+        content,
+        visit_date AS visitDate,
+        created_at AS createdAt
+        FROM reviews
+        WHERE place_id = #{placeId}
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 리뷰별 사진 목록 -->
+    <select id="getReviewPhotos" resultType="string">
+        SELECT photo_url
+        FROM review_photos
+        WHERE review_id = #{reviewId}
+    </select>
+
+    <!-- 특정 가게의 전체 리뷰 사진 (Top3 사진 추출용) -->
+    <select id="getPhotoUrlsByPlaceId" resultType="string">
+        SELECT rp.photo_url
+        FROM review_photos rp
+        JOIN reviews r ON rp.review_id = r.id
+        WHERE r.place_id = #{placeId}
+    </select>
+
+    <!-- 리뷰 개수 -->
+    <select id="countReviewsByPlace" resultType="int">
+        SELECT COUNT(*)
+        FROM reviews
+        WHERE place_id = #{placeId}
+    </select>
+
+</mapper>

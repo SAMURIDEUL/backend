@@ -2,11 +2,13 @@ package com.example.samuL.review.mapper;
 
 import com.example.samuL.review.dto.ReviewDto;
 import com.example.samuL.review.dto.ReviewPhotoDto;
+import com.example.samuL.review.dto.ReviewResponse;
 import com.example.samuL.review.dto.ReviewWithPhotosDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ReviewMapper {
@@ -28,5 +30,14 @@ public interface ReviewMapper {
     //리뷰 사진 삭제
     Long findReviewOwner(Long reviewId);
     int deleteReview(Long reviewId);
+
+    // 리뷰 조회
+    List<ReviewResponse> getUserReviews(@Param("userId") Long userId,
+                                                     @Param("offset") int offset,
+                                                     @Param("size") int size);
+
+    List<ReviewPhotoDto> getPhotosByReviewIds(@Param("list") List<Long> reviewIds);
+
+    long countUserReviews(@Param("userId") Long userId);
 
 }
