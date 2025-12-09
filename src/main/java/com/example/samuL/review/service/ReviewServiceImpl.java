@@ -1,5 +1,7 @@
 package com.example.samuL.review.service;
 
+import com.example.samuL.common.exception.custom.FileUploadsException;
+import com.example.samuL.common.exception.custom.ReviewValidationException;
 import com.example.samuL.common.properties.FileStorageProperties;
 import com.example.samuL.review.dto.*;
 import com.example.samuL.review.mapper.ReviewMapper;
@@ -32,6 +34,13 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewDto addReview(ReviewDto reviewDto,
                                List<MultipartFile> imageFiles,
                                Long userId) throws IOException{
+        if(reviewDto.getContent() == null || reviewDto.getContent().length() < 5){
+            throw new ReviewValidationException("리뷰 내용은 최소 5자 이상이어야 합니다.");
+        }
+
+        if(reviewDto.getRating() < 1 || reviewDto.getRating() > 5){
+            throw new ReviewValidationException("평점은 1점에서 5점 사이여야 합니다.");
+        }
         reviewDto.setUserId(userId);
         reviewMapper.insertReview(reviewDto);
 
@@ -40,15 +49,28 @@ public class ReviewServiceImpl implements ReviewService{
 
         if(imageFiles != null && !imageFiles.isEmpty()){
             for(MultipartFile file : imageFiles){
-                if(file.isEmpty()) continue;
+                if(file.isEmpty()){
+                    throw new FileUploadsException("빈 파일은 업로드할 수 없습니다.");
+                }
 
                 String ext = StringUtils.getFilenameExtension(file.getOriginalFilename());
+                if(ext == null || (!ext.equalsIgnoreCase("jpg")
+                        && !ext.equalsIgnoreCase("jpeg")
+                        && !ext.equalsIgnoreCase("png"))){
+                    throw new FileUploadsException("지원하지 않는 이미지 형식입니다. (jpg, jpeg, png)");
+                }
                 String filename = UUID.randomUUID() + (ext != null ? "." + ext : "");
 
                 Path filePath = uploadDir.resolve(filename);
-                file.transferTo(filePath.toFile());
+                try{
+                    // 파일 저장
+                    file.transferTo(filePath.toFile());
+                }catch(IOException e){
+                    throw new FileUploadsException("이미지 저장 중 오류가 발생했습니다.");
+                }
 
                 //System.out.println("파일 저장 경로: " + filePath.toAbsolutePath());
+                // DB 저장
                 String prefix = fileStorageProperties.getAccessUrlPrefix();
                 if (!prefix.endsWith("/")) prefix += "/";
                 ReviewPhotoDto photo = new ReviewPhotoDto();
