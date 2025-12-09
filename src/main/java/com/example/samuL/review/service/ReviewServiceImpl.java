@@ -1,6 +1,7 @@
 package com.example.samuL.review.service;
 
 import com.example.samuL.common.exception.custom.FileUploadsException;
+import com.example.samuL.common.exception.custom.ReviewNotFoundException;
 import com.example.samuL.common.exception.custom.ReviewValidationException;
 import com.example.samuL.common.properties.FileStorageProperties;
 import com.example.samuL.review.dto.*;
@@ -17,10 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,11 +97,26 @@ public class ReviewServiceImpl implements ReviewService{
         Path uploadDir = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
         ReviewWithPhotosDto oldReview = reviewMapper.findById(reviewId);
+        if (oldReview == null){
+            throw new ReviewNotFoundException("리뷰를 찾을 수 없습니다.");
+        }
+        if(!oldReview.getUserId().equals(userId)){
+            throw new AccessDeniedException("본인 리뷰만 수정할 수 있습니다.");
+        }
+
         // 리뷰 내용 수정
         oldReview.setPhotos(reviewMapper.selectReviewPhotos(reviewId));
         reviewWithPhotosDto.setId(reviewId);
 
+        if (reviewWithPhotosDto.getContent() == null || reviewWithPhotosDto.getContent().length() < 5){
+            throw new ReviewValidationException("리뷰 내용은 최소 5자 이상이어야 합니다.");
+        }
+        if(reviewWithPhotosDto.getRating() < 1 || reviewWithPhotosDto.getRating() > 5){
+            throw new ReviewValidationException("평점은 1점에서 5점 사이여야 합니다.");
+        }
+
         boolean reviewUpdated = !oldReview.equals(reviewWithPhotosDto);
+
         if(reviewUpdated){
             reviewMapper.updateReview(reviewWithPhotosDto);
         }
@@ -135,10 +148,21 @@ public class ReviewServiceImpl implements ReviewService{
                 if(file.isEmpty()) continue;
 
                 String ext = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+                if(ext == null || (!ext.equalsIgnoreCase("jpg")
+                        && !ext.equalsIgnoreCase("jpeg")
+                        && !ext.equalsIgnoreCase("png"))){
+                    throw new FileUploadsException("지원하지 않는 이미지 형식입니다. (jpg, jpeg, png)");
+                }
+
                 String filename = UUID.randomUUID() + (ext != null ? "." + ext : "");
 
                 Path filePath = uploadDir.resolve(filename);
-                file.transferTo(filePath.toFile());
+                try {
+                    file.transferTo(filePath.toFile());
+                }catch(IOException e){
+                    throw new FileUploadsException("새 이미지 저장 중 오류가 발생하였습니다.");
+                }
 
 
                 ReviewPhotoDto newPhoto = new ReviewPhotoDto();
@@ -184,10 +208,17 @@ public class ReviewServiceImpl implements ReviewService{
     // 자신이 작성한 리뷰 조회
     @Override
     public ReviewPaginatedResponse<ReviewResponse> getUserReviews(Long userId, int page, int size){
+        if (page < 0 || size <= 0){
+            throw new IllegalArgumentException("페이지는 0 이상, 사이즈는 0 초과 값이어야 합니다.");
+        }
         int offset = page * size;
 
         // 리뷰 조회
         List<ReviewResponse> reviews = reviewMapper.getUserReviews(userId, offset, size);
+
+        if(reviews.isEmpty()){
+            return new ReviewPaginatedResponse<>(Collections.emptyList(),page, size, 0, 0);
+        }
 
         if (!reviews.isEmpty()){
             List<Long> reviewIds = reviews.stream().map(ReviewResponse::getId).toList();
