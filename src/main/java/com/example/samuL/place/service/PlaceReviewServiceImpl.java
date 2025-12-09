@@ -1,6 +1,7 @@
 package com.example.samuL.place.service;
 
 
+import com.example.samuL.common.exception.custom.PlaceNotFoundException;
 import com.example.samuL.place.dto.PlaceDetailDto;
 import com.example.samuL.place.dto.PlacePlaceDto;
 import com.example.samuL.place.dto.PlaceReviewDto;
@@ -18,8 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaceReviewServiceImpl implements PlaceReviewService {
     private final PlaceReviewMapper placeReviewMapper;
+
     public PlaceDetailDto getPlaceDetail(Long placeId){
         PlacePlaceDto placeInfo = placeReviewMapper.getPlaceById(placeId);
+        if (placeInfo == null){
+            throw new PlaceNotFoundException("존재하지 않는 장소입니다. placeId: " + placeId);
+        }
+
         String defaultImg = CategoryDefaultImage.getDefaultImage(placeInfo.getCategoryId());
 
         List<String> allphotos = placeReviewMapper.getPhotoUrlsByPlaceId(placeId);
@@ -42,6 +48,14 @@ public class PlaceReviewServiceImpl implements PlaceReviewService {
     }
 
     public ReviewPageDto getReviewsPaged(Long placeId, int page, int size){
+        if(page < 0 || size <= 0){
+            throw new IllegalArgumentException("페이지는 0 이상, 사이즈는 0 초과 값이어야 합니다.");
+        }
+        PlacePlaceDto place = placeReviewMapper.getPlaceById(placeId);
+        if (place == null){
+            throw new PlaceNotFoundException("존재하지 않는 장소입니다. placeId: " + placeId);
+        }
+
         int offset = page * size;
 
         List<PlaceReviewDto> reviews = placeReviewMapper.getReviewsByPlacePaged(placeId, offset, size);
