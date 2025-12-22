@@ -1,6 +1,7 @@
 package com.example.samuL.place.service;
 
 import com.example.samuL.place.dto.PlaceDto;
+import com.example.samuL.place.dto.PlaceReviewDto;
 import com.example.samuL.place.dto.PlaceScrollResponse;
 
 import com.example.samuL.place.mapper.PlaceMapper;
@@ -37,6 +38,13 @@ public class PlaceServiceImpl implements PlaceService{
             places = places.subList(0, size);
         }
 
+        for (PlaceDto place : places){
+            Long placeId = place.getId().longValue();
+            Double avgScore = placeMapper.getAverageScoreByPlaceId(placeId);
+            place.setAverageRating(avgScore);
+        }
+
+
         Long nextCursor = hasNext ? places.get(places.size() - 1).getId().longValue() : null;
 
         return new PlaceScrollResponse(places, nextCursor, hasNext);
@@ -62,6 +70,9 @@ public class PlaceServiceImpl implements PlaceService{
         for(Long offset : offsets){
             PlaceDto place = placeMapper.getPlaceByOffset(offset);
             if(place != null){
+                Long placeId = place.getId().longValue();
+                Double avgScore = placeMapper.getAverageScoreByPlaceId(placeId);
+                place.setAverageRating(avgScore);
                 places.add(place);
             }
 

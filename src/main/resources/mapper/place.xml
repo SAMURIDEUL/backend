@@ -20,6 +20,7 @@
         <result property="updatedAt" column="updated_at" />
         <result property="categoryId" column="category_id" />
 
+
         <!-- PetPolicyDto를 중첩 객체로 매핑 -->
         <association property="petPolicy" javaType="com.example.samuL.place.dto.PetPolicyDto">
             <result property="petAllowed" column="pet_allowed" />
@@ -72,41 +73,7 @@
         ORDER BY p.id DESC
         LIMIT #{pageSize}
     </select>
-<!--    <select id="findPlaces" resultType="com.example.samuL.place.dto.PlaceDto">-->
-<!--        select-->
-<!--            id,-->
-<!--            name,-->
-<!--            category3,-->
-<!--            city,-->
-<!--            district,-->
-<!--            subdistrict,-->
-<!--            road_address as roadAddress,-->
-<!--            postal_code as postalCode,-->
-<!--            phone,-->
-<!--            lat,-->
-<!--            lon,-->
-<!--            updated_at as updatedAt,-->
-<!--            category_id as categoryId-->
-<!--        from places-->
-<!--        where category_id = #{categoryId}-->
-<!--        <if test="city != null and city != ''">-->
-<!--            and city = #{city}-->
-<!--        </if>-->
-<!--        <if test="district != null and district != ''">-->
-<!--            and district = #{district}-->
-<!--        </if>-->
-<!--        <if test="subdistrict != null and subdistrict != ''">-->
-<!--            and subdistrict = #{subdistrict}-->
-<!--        </if>-->
-<!--        <if test="keyword != null">-->
-<!--            and name like concat('%', #{keyword}, '%')-->
-<!--        </if>-->
-<!--        <if test="lastId != null">-->
-<!--            and id &gt; #{lastId}-->
-<!--        </if>-->
-<!--        order by id desc-->
-<!--        limit #{pageSize}-->
-<!--    </select>-->
+
     <select id="getPlaceByOffset" parameterType="long" resultMap="PlaceResultMap">
         SELECT
         p.id,
@@ -133,26 +100,10 @@
         LIMIT #{offset}, 1
     </select>
 
-
-
-<!--    <select id="getPlaceByOffset" parameterType="long" resultType="com.example.samuL.place.dto.PlaceDto">-->
-<!--        select-->
-<!--        id,-->
-<!--        name,-->
-<!--        category3,-->
-<!--        city,-->
-<!--        district,-->
-<!--        subdistrict,-->
-<!--        road_address as roadAddress,-->
-<!--        postal_code as postalCode,-->
-<!--        phone,-->
-<!--        lat,-->
-<!--        lon,-->
-<!--        updated_at as updatedAt,-->
-<!--        category_id as categoryId-->
-<!--        from places-->
-<!--        limit #{offset}, 1-->
-<!--    </select>-->
-
+    <select id="getAverageScoreByPlaceId" resultType="double">
+        select ifnull(avg(rating), 0)
+        from reviews
+        where place_id = #{placeId}
+    </select>
 
 </mapper>

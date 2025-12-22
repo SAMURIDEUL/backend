@@ -29,4 +29,5 @@ public interface PlaceMapper {
 
     PlaceDto getPlaceByOffset(@Param("offset") long offset);
 
+    Double getAverageScoreByPlaceId(Long placeId);
 }
