@@ -22,4 +22,7 @@ public class PlacePlaceDto {
 
     private String updatedAt;
     private Long categoryId;
+
+    private PetPolicyDto petPolicy;
+    private Double averageRating;
 }

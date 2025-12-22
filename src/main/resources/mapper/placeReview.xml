@@ -4,24 +4,76 @@
 
 <mapper namespace="com.example.samuL.place.mapper.PlaceReviewMapper">
 
-    <select id="getPlaceById" resultType="com.example.samuL.place.dto.PlacePlaceDto">
-        SELECT
-        id,
-        name,
-        category3 AS category3,
-        city,
-        district,
-        subdistrict,
-        road_address AS roadAddress,
-        postal_code AS postalCode,
-        phone,
-        lat,
-        lon,
-        updated_at AS updatedAt,
-        category_id AS categoryId
-        FROM places
-        WHERE id = #{placeId}
+    <resultMap id="PlaceReviewResultMap" type="com.example.samuL.place.dto.PlacePlaceDto">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="category3" column="category3" />
+        <result property="city" column="city" />
+        <result property="district" column="district" />
+        <result property="subdistrict" column="subdistrict" />
+        <result property="roadAddress" column="road_address" />
+        <result property="postalCode" column="postal_code" />
+        <result property="phone" column="phone" />
+        <result property="lat" column="lat" />
+        <result property="lon" column="lon" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="categoryId" column="category_id" />
+
+
+        <!-- PetPolicyDto를 중첩 객체로 매핑 -->
+        <association property="petPolicy" javaType="com.example.samuL.place.dto.PetPolicyDto">
+            <result property="petAllowed" column="pet_allowed" />
+            <result property="petSizeLimit" column="pet_size_limit" />
+            <result property="indoorFlag" column="indoor_flag" />
+            <result property="outdoorFlag" column="outdoor_flag" />
+            <result property="petRestrictions" column="pet_restrictions" />
+        </association>
+
+    </resultMap>
+
+    <select id="getPlaceById" resultMap="PlaceReviewResultMap">
+    SELECT
+    p.id,
+    p.name,
+    p.category3,
+    p.city,
+    p.district,
+    p.subdistrict,
+    p.road_address,
+    p.postal_code,
+    p.phone,
+    p.lat,
+    p.lon,
+    p.updated_at,
+    p.category_id,
+    pp.pet_allowed,
+    pp.pet_size_limit,
+    pp.indoor_flag,
+    pp.outdoor_flag,
+    pp.pet_restrictions
+    FROM places p
+    LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
+        WHERE p.id = #{placeId}
     </select>
+
+<!--    <select id="getPlaceById" resultType="com.example.samuL.place.dto.PlacePlaceDto">-->
+<!--        SELECT-->
+<!--        id,-->
+<!--        name,-->
+<!--        category3 AS category3,-->
+<!--        city,-->
+<!--        district,-->
+<!--        subdistrict,-->
+<!--        road_address AS roadAddress,-->
+<!--        postal_code AS postalCode,-->
+<!--        phone,-->
+<!--        lat,-->
+<!--        lon,-->
+<!--        updated_at AS updatedAt,-->
+<!--        category_id AS categoryId-->
+<!--        FROM places-->
+<!--        WHERE id = #{placeId}-->
+<!--    </select>-->
     <!-- 리뷰 목록 (무한 스크롤) -->
     <select id="getReviewsByPlacePaged" resultType="com.example.samuL.place.dto.PlaceReviewDto">
         SELECT

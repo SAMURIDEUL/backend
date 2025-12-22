@@ -7,6 +7,7 @@ import com.example.samuL.place.dto.PlacePlaceDto;
 import com.example.samuL.place.dto.PlaceReviewDto;
 import com.example.samuL.place.dto.ReviewPageDto;
 import com.example.samuL.place.image.CategoryDefaultImage;
+import com.example.samuL.place.mapper.PlaceMapper;
 import com.example.samuL.place.mapper.PlaceReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaceReviewServiceImpl implements PlaceReviewService {
     private final PlaceReviewMapper placeReviewMapper;
-
+    private final PlaceMapper placeMapper;
     public PlaceDetailDto getPlaceDetail(Long placeId){
         PlacePlaceDto placeInfo = placeReviewMapper.getPlaceById(placeId);
         if (placeInfo == null){
             throw new PlaceNotFoundException("존재하지 않는 장소입니다. placeId: " + placeId);
         }
+        Long place_id = placeInfo.getId().longValue();
+        Double avgScore = placeMapper.getAverageScoreByPlaceId(place_id);
+        placeInfo.setAverageRating(avgScore);
 
         String defaultImg = CategoryDefaultImage.getDefaultImage(placeInfo.getCategoryId());
 
@@ -42,6 +46,7 @@ public class PlaceReviewServiceImpl implements PlaceReviewService {
 
         PlaceDetailDto dto = new PlaceDetailDto();
         dto.setPlaceInfo(placeInfo);
+
         dto.setTop3photos(top3Photos);
 
         return dto;
