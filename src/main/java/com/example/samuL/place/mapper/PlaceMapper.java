@@ -24,6 +24,8 @@ public interface PlaceMapper {
 
     );
 
+
+
     @Select("SELECT COUNT(*) FROM places")
     long getTotalCount();
 

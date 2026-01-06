@@ -56,24 +56,7 @@
         WHERE p.id = #{placeId}
     </select>
 
-<!--    <select id="getPlaceById" resultType="com.example.samuL.place.dto.PlacePlaceDto">-->
-<!--        SELECT-->
-<!--        id,-->
-<!--        name,-->
-<!--        category3 AS category3,-->
-<!--        city,-->
-<!--        district,-->
-<!--        subdistrict,-->
-<!--        road_address AS roadAddress,-->
-<!--        postal_code AS postalCode,-->
-<!--        phone,-->
-<!--        lat,-->
-<!--        lon,-->
-<!--        updated_at AS updatedAt,-->
-<!--        category_id AS categoryId-->
-<!--        FROM places-->
-<!--        WHERE id = #{placeId}-->
-<!--    </select>-->
+
     <!-- 리뷰 목록 (무한 스크롤) -->
     <select id="getReviewsByPlacePaged" resultType="com.example.samuL.place.dto.PlaceReviewDto">
         SELECT

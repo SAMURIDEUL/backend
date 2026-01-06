@@ -9,7 +9,6 @@ import com.example.samuL.place.service.PlaceReviewService;
 import com.example.samuL.place.service.PlaceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,12 +40,5 @@ public class PlaceController {
     ){
         return ResponseEntity.ok(placeReviewService.getReviewsPaged(placeId, page, size));
     }
-
-//    @GetMapping("{placeId}")
-//    public ResponseEntity<PlaceDetailDto> getPlaceDetail(@PathVariable Long placeId){
-//        PlaceDetailDto placeDetail = placeService.getPlaceDetail(placeId);
-//        return ResponseEntity.ok(placeDetail);
-//    }
-
 
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.samuL.place.mapper.PlaceLocMapper">
+
+    <resultMap id="PlaceReviewResultMap" type="com.example.samuL.place.dto.PlacePlaceDto">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="category3" column="category3" />
+        <result property="city" column="city" />
+        <result property="district" column="district" />
+        <result property="subdistrict" column="subdistrict" />
+        <result property="roadAddress" column="road_address" />
+        <result property="postalCode" column="postal_code" />
+        <result property="phone" column="phone" />
+        <result property="lat" column="lat" />
+        <result property="lon" column="lon" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="categoryId" column="category_id" />
+
+
+        <!-- PetPolicyDto를 중첩 객체로 매핑 -->
+        <association property="petPolicy" javaType="com.example.samuL.place.dto.PetPolicyDto">
+            <result property="petAllowed" column="pet_allowed" />
+            <result property="petSizeLimit" column="pet_size_limit" />
+            <result property="indoorFlag" column="indoor_flag" />
+            <result property="outdoorFlag" column="outdoor_flag" />
+            <result property="petRestrictions" column="pet_restrictions" />
+        </association>
+
+    </resultMap>
+
+    <select id="selectNearbyPlaces"
+            resultMap="PlaceReviewResultMap"
+            parameterType="map">
+        SELECT
+        p.id,
+        p.name,
+        p.category3,
+        p.city,
+        p.district,
+        p.subdistrict,
+        p.road_address,
+        p.postal_code,
+        p.phone,
+        p.lat,
+        p.lon,
+        p.updated_at,
+        p.category_id,
+        pp.pet_allowed,
+        pp.pet_size_limit,
+        pp.indoor_flag,
+        pp.outdoor_flag,
+        pp.pet_restrictions,
+        ST_Distance_Sphere(
+        p.geom,
+        POINT(CAST(#{lon} AS DECIMAL(9,6)), CAST(#{lat} AS DECIMAL(9,6)))
+        ) AS distance
+        FROM places p
+        LEFT JOIN place_pet_policies pp ON pp.place_id = p.id
+        ORDER BY distance
+        LIMIT 30
+    </select>
+
+    <select id="getAverageScoreByPlaceId" resultType="double">
+        select ifnull(avg(rating), 0)
+        from reviews
+        where place_id = #{placeId}
+    </select>
+
+
+
+</mapper>

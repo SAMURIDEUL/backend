@@ -46,11 +46,5 @@ public class PlaceCategoryController {
     }
 
 
-//    @GetMapping("places/random")
-//    public ResponseEntity<OkResponse<List<PlaceDto>>> getRandomPlaces(HttpServletRequest request){
-//        List<PlaceDto> randomPlaces = placeService.getRandomPlaces();
-//        return ResponseEntity.ok(OkResponse.success("6개 랜덤 추출 성공", randomPlaces, request.getRequestURI()) );
-//    }
-
 
 }

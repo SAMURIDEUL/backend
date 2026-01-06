@@ -1,5 +1,6 @@
 package com.example.samuL.place.service;
 
+import com.example.samuL.place.dto.PlaceDetailDto;
 import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlaceReviewDto;
 import com.example.samuL.place.dto.PlaceScrollResponse;
@@ -7,6 +8,7 @@ import com.example.samuL.place.dto.PlaceScrollResponse;
 import com.example.samuL.place.mapper.PlaceMapper;
 
 
+import com.example.samuL.place.mapper.PlaceReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService{
     private final PlaceMapper placeMapper;
+    private final PlaceReviewMapper placeReviewMapper;
 
     @Override
     public PlaceScrollResponse getPlace(Integer categoryId,
@@ -31,6 +34,8 @@ public class PlaceServiceImpl implements PlaceService{
                                         String keyword,
                                         BigInteger lastId,
                                         int size){
+
+        // 1. 장소 목록 조회
         List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, lastId, size + 1);
         boolean hasNext = false;
         if(places.size() > size){
@@ -38,13 +43,14 @@ public class PlaceServiceImpl implements PlaceService{
             places = places.subList(0, size);
         }
 
+
         for (PlaceDto place : places){
             Long placeId = place.getId().longValue();
             Double avgScore = placeMapper.getAverageScoreByPlaceId(placeId);
             place.setAverageRating(avgScore);
         }
 
-
+        // 다음 커서 계산
         Long nextCursor = hasNext ? places.get(places.size() - 1).getId().longValue() : null;
 
         return new PlaceScrollResponse(places, nextCursor, hasNext);
@@ -79,11 +85,6 @@ public class PlaceServiceImpl implements PlaceService{
         }
         return places;
     }
-
-//    @Override
-//    public PlaceDetailDto getPlaceDetail(Long placeId){
-//        return placeDetailMapper.findPlaceDetailById(placeId);
-//    }
 
 
 }

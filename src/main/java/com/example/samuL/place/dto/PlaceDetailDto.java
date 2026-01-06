@@ -8,5 +8,4 @@ import java.util.List;
 public class PlaceDetailDto {
     private PlacePlaceDto placeInfo;
     private List<String> top3photos;
-
 }
