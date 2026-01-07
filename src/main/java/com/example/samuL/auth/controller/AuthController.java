@@ -46,12 +46,6 @@ public class AuthController {
         TokenResponseDto tokenResponseDto = authService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(OkResponse.success("access 토큰 재발급 성공", tokenResponseDto, request.getRequestURI()));
     }
-//    public ResponseEntity<TokenResponseDto> refreshAccessToken(@RequestHeader("Authorization") String bearerToken){
-//        String refreshToken = bearerToken.replace("Bearer ", "");
-//        TokenResponseDto tokenResponseDto = authService.refreshAccessToken(refreshToken);
-//        return ResponseEntity.ok(tokenResponseDto);
-//    }
-
 
 
     @PostMapping("/logout")

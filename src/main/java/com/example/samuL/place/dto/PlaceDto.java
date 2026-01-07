@@ -7,6 +7,7 @@ import java.math.BigInteger;
 @Data
 public class PlaceDto {
     private BigInteger id;
+//    private Long id;
     private String name;
     private String category3;
 

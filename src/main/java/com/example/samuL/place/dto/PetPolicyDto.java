@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PetPolicyDto {
-//    private Long placeId;
+    // 제약 사항에 관한 dto
     private Boolean petAllowed; // 반려동물 동반 가능
     private String petSizeLimit; // 반려동물 사이즈 제안
     private Boolean indoorFlag;  // 실내 가능

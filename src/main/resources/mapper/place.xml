@@ -100,6 +100,31 @@
         LIMIT #{offset}, 1
     </select>
 
+    <select id="getAverageScores" resultType="map">
+        SELECT
+        place_id   AS placeId,
+        AVG(rating) AS avgScore
+        FROM reviews
+        WHERE place_id IN
+        <foreach collection="placeIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        GROUP BY place_id
+    </select>
+
+    <select id="getPhotoUrls" resultType="map">
+        SELECT
+        r.place_id   AS placeId,
+        rp.photo_url AS photoUrl
+        FROM review_photos rp
+        JOIN reviews r ON rp.review_id = r.id
+        WHERE r.place_id IN
+        <foreach collection="placeIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
     <select id="getAverageScoreByPlaceId" resultType="double">
         select ifnull(avg(rating), 0)
         from reviews

@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/places")
 @RequiredArgsConstructor
 public class PlaceLocController {
+    // 위치를 이용한 장소 검색 전용 controller
     private final PlaceLocService placeLocService;
 
     @GetMapping("/nearby")

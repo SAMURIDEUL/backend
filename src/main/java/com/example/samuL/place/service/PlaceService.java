@@ -2,6 +2,7 @@ package com.example.samuL.place.service;
 
 import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlaceScrollResponse;
+import com.example.samuL.place.dto.PlaceSelectScroll;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -15,6 +16,14 @@ public interface PlaceService {
                                  String keyword,
                                  BigInteger lastId,
                                  int size);
+
+    PlaceSelectScroll getPlaceDetail(Integer categoryId,
+                                     String city,
+                                     String district,
+                                     String subdistrict,
+                                     String keyword,
+                                     BigInteger lastId,
+                                     int size);
 
     // place 랜덤 6개 조회
     public List<PlaceDto> getRandomPlaces();

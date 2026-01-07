@@ -1,14 +1,9 @@
 package com.example.samuL.place.mapper;
 
-import com.example.samuL.place.dto.PlaceDetailDto;
-import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlacePlaceDto;
-import com.example.samuL.place.dto.PlaceSearchParam;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Mapper

@@ -4,6 +4,7 @@ package com.example.samuL.place.controller;
 import com.example.samuL.common.okResponse.OkResponse;
 import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlaceScrollResponse;
+import com.example.samuL.place.dto.PlaceSelectScroll;
 import com.example.samuL.place.service.PlaceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,33 @@ import java.util.List;
 public class PlaceCategoryController {
     private final PlaceService placeService;
 
-    @GetMapping("/{categoryId}/places")
-    public ResponseEntity<PlaceScrollResponse> getPlacesByCategory(
+//    @GetMapping("/{categoryId}/places")
+//    public ResponseEntity<PlaceScrollResponse> getPlacesByCategory(
+//            @PathVariable Integer categoryId,
+//            @RequestParam(required = false) String city,
+//            @RequestParam(required = false) String district,
+//            @RequestParam(required = false) String subdistrict,
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(required = false)BigInteger lastId,
+//            @RequestParam(defaultValue = "20") int size
+//            ){
+//
+//        if(categoryId > 13 || categoryId < 1){
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다.");
+//        }
+//
+//        if(size <= 0 || size > 100){
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "size는 1 - 100 사이의 값이 어야 됩니다.");
+//        }
+//
+//        PlaceScrollResponse response = placeService.getPlace(categoryId, city, district, subdistrict, keyword, lastId, size);
+//        return ResponseEntity.ok(response);
+//
+//
+//    }
+    // 사진 추가, 썸네일 추가
+    @GetMapping("{categoryId}/places")
+    public ResponseEntity<PlaceSelectScroll> getPlacesCategory(
             @PathVariable Integer categoryId,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
@@ -30,17 +56,19 @@ public class PlaceCategoryController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false)BigInteger lastId,
             @RequestParam(defaultValue = "20") int size
-            ){
 
+    ){
+        // 카테고리 유효성 검사
         if(categoryId > 13 || categoryId < 1){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다.");
         }
-
+        // 페이지 유효성 검사
         if(size <= 0 || size > 100){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "size는 1 - 100 사이의 값이 어야 됩니다.");
         }
 
-        PlaceScrollResponse response = placeService.getPlace(categoryId, city, district, subdistrict, keyword, lastId, size);
+        PlaceSelectScroll response = placeService.getPlaceDetail(categoryId, city, district, subdistrict, keyword, lastId, size);
+
         return ResponseEntity.ok(response);
 
     }
