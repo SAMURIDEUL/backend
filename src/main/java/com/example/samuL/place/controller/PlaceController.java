@@ -4,6 +4,7 @@ package com.example.samuL.place.controller;
 import com.example.samuL.common.okResponse.OkResponse;
 import com.example.samuL.place.dto.PlaceDetailDto;
 import com.example.samuL.place.dto.PlaceDto;
+import com.example.samuL.place.dto.RandomPlaceResponse;
 import com.example.samuL.place.dto.ReviewPageDto;
 import com.example.samuL.place.service.PlaceReviewService;
 import com.example.samuL.place.service.PlaceService;
@@ -21,10 +22,17 @@ public class PlaceController {
     private final PlaceService placeService;
     private final PlaceReviewService placeReviewService;
 
+//    @GetMapping("/random")
+//    public ResponseEntity<OkResponse<List<PlaceDto>>> getRandomPlaces(HttpServletRequest request){
+//        List<PlaceDto> randomPlaces = placeService.getRandomPlaces();
+//        return ResponseEntity.ok(OkResponse.success("6개 랜덤 추출 성공", randomPlaces, request.getRequestURI()) );
+//    }
+
     @GetMapping("/random")
-    public ResponseEntity<OkResponse<List<PlaceDto>>> getRandomPlaces(HttpServletRequest request){
-        List<PlaceDto> randomPlaces = placeService.getRandomPlaces();
-        return ResponseEntity.ok(OkResponse.success("6개 랜덤 추출 성공", randomPlaces, request.getRequestURI()) );
+    public ResponseEntity<OkResponse<List<RandomPlaceResponse>>> getRandom(HttpServletRequest request){
+        List<RandomPlaceResponse> response = placeService.getRandomPlaceWithThumbnail();
+
+        return ResponseEntity.ok(OkResponse.success("6개 랜덤 추출 성공", response, request.getRequestURI()));
     }
 
     @GetMapping("/{placeId}")

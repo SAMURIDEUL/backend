@@ -2,6 +2,7 @@ package com.example.samuL.place.mapper;
 
 
 import com.example.samuL.place.dto.PlaceDto;
+import com.example.samuL.place.dto.PlacePlaceDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -41,6 +42,9 @@ public interface PlaceMapper {
     long getTotalCount();
 
     PlaceDto getPlaceByOffset(@Param("offset") long offset);
+
+    //
+    PlacePlaceDto getPlaceOffset(@Param("offset") long offset);
 
     Double getAverageScoreByPlaceId(Long placeId);
 }

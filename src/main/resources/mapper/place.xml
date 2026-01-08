@@ -4,8 +4,36 @@
 
 
 <mapper namespace="com.example.samuL.place.mapper.PlaceMapper">
-
+    <!--  placedto용 resultmap-->
     <resultMap id="PlaceResultMap" type="com.example.samuL.place.dto.PlaceDto">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="category3" column="category3" />
+        <result property="city" column="city" />
+        <result property="district" column="district" />
+        <result property="subdistrict" column="subdistrict" />
+        <result property="roadAddress" column="road_address" />
+        <result property="postalCode" column="postal_code" />
+        <result property="phone" column="phone" />
+        <result property="lat" column="lat" />
+        <result property="lon" column="lon" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="categoryId" column="category_id" />
+
+
+        <!-- PetPolicyDto를 중첩 객체로 매핑 -->
+        <association property="petPolicy" javaType="com.example.samuL.place.dto.PetPolicyDto">
+            <result property="petAllowed" column="pet_allowed" />
+            <result property="petSizeLimit" column="pet_size_limit" />
+            <result property="indoorFlag" column="indoor_flag" />
+            <result property="outdoorFlag" column="outdoor_flag" />
+            <result property="petRestrictions" column="pet_restrictions" />
+        </association>
+
+    </resultMap>
+
+    <!--PlacePlaceDto용 resultMap-->
+    <resultMap id="PlacePlaceResultMap" type="com.example.samuL.place.dto.PlacePlaceDto">
         <id property="id" column="id" />
         <result property="name" column="name" />
         <result property="category3" column="category3" />
@@ -100,6 +128,38 @@
         LIMIT #{offset}, 1
     </select>
 
+
+    <select id="getPlaceOffset" parameterType="long" resultMap="PlacePlaceResultMap">
+        SELECT
+        p.id,
+        p.name,
+        p.category3,
+        p.city,
+        p.district,
+        p.subdistrict,
+        p.road_address,
+        p.postal_code,
+        p.phone,
+        p.lat,
+        p.lon,
+        p.updated_at,
+        p.category_id,
+
+        pp.pet_allowed,
+        pp.pet_size_limit,
+        pp.indoor_flag,
+        pp.outdoor_flag,
+        pp.pet_restrictions
+        FROM places p
+        LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
+        LIMIT #{offset}, 1
+    </select>
+
+
+
+
+
+
     <select id="getAverageScores" resultType="map">
         SELECT
         place_id   AS placeId,
@@ -129,6 +189,13 @@
         select ifnull(avg(rating), 0)
         from reviews
         where place_id = #{placeId}
+    </select>
+
+    <select id="getPhotoUrlsByPlaceId" resultType="string">
+        SELECT rp.photo_url
+        FROM review_photos rp
+        JOIN reviews r ON rp.review_id = r.id
+        WHERE r.place_id = #{placeId}
     </select>
 
 </mapper>

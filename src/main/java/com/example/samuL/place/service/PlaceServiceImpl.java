@@ -100,7 +100,7 @@ public class PlaceServiceImpl implements PlaceService{
             String defaultImg = CategoryDefaultImage.getDefaultImage(place.getCategoryId().longValue());
 
             List<String> top3Photos = makeTop3Photos(allPhotos, defaultImg);
-
+            // 썸네일
             String thumbnail = top3Photos.get(0);
 
             PlaceSelectDetailDto dto = new PlaceSelectDetailDto();
@@ -163,6 +163,45 @@ public class PlaceServiceImpl implements PlaceService{
 
         }
         return places;
+    }
+
+    // 랜덤 6개 with 썸네일
+    @Override
+    public List<RandomPlaceResponse> getRandomPlaceWithThumbnail(){
+        // 전체 개수 캐싱
+        if(cachedTotalCount == null){
+            cachedTotalCount = placeMapper.getTotalCount(); // 최초 1회만 DB접근
+        }
+
+        long totalCount = cachedTotalCount;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        Set<Long>offsets = new HashSet<>();
+        while(offsets.size() < 6){
+            offsets.add(random.nextLong(totalCount));
+        }
+
+        List<RandomPlaceResponse> result = new ArrayList<>();
+        for(Long offset : offsets){
+            PlacePlaceDto place = placeMapper.getPlaceOffset(offset);
+            if (place == null){
+                continue;
+            }
+
+            Long placeId = place.getId();
+
+            Double avgScore = placeMapper.getAverageScoreByPlaceId(placeId);
+            place.setAverageRating(avgScore != null ? avgScore : 0.0);
+
+            List<String> photos = placeMapper.getPhotoUrlsByPlaceId(placeId);
+            String thumbnail = (photos != null && ! photos.isEmpty()) ?
+                    photos.get(0) : CategoryDefaultImage.getDefaultImage((place.getCategoryId()));
+
+            RandomPlaceResponse dto = new RandomPlaceResponse(place, thumbnail);
+            result.add(dto);
+
+        }
+        return result;
     }
 
 
