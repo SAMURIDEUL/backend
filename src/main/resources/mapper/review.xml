@@ -7,8 +7,9 @@
     <!-- 리뷰 작성 -->
     <insert id="insertReview" parameterType="com.example.samuL.review.dto.ReviewDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO reviews (place_id, user_id, rating, content, visit_date)
-        VALUES (#{placeId}, #{userId}, #{rating}, #{content}, #{visitDate})
+        VALUES (#{placeId}, #{userId}, #{rating}, #{content}, CURDATE())
     </insert>
+
     <!-- 리뷰 작성(사진 -->
     <insert id="insertReviewPhoto" parameterType="com.example.samuL.review.dto.ReviewPhotoDto">
         INSERT INTO review_photos (review_id, photo_url)

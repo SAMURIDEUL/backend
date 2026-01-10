@@ -23,11 +23,12 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<ReviewDto> createReview(
+    public ResponseEntity<OkResponse<ReviewDto>> createReview(
             @PathVariable Long placeId,
             @RequestPart("review") ReviewDto reviewDto,
             @RequestPart(value = "images", required = false)List<MultipartFile> images,
-            Authentication authentication
+            Authentication authentication,
+            HttpServletRequest request
             ) throws IOException{
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         Long userId = user.getUserId();
@@ -35,7 +36,7 @@ public class ReviewController {
         reviewDto.setPlaceId(placeId);
 
         ReviewDto saveReview = reviewService.addReview(reviewDto, images, userId);
-        return ResponseEntity.ok(saveReview);
+        return ResponseEntity.ok(OkResponse.success(saveReview, request.getRequestURI()));
     }
 
     @GetMapping

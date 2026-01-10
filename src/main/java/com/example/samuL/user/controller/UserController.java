@@ -4,6 +4,8 @@ import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.common.exception.custom.DuplicateException;
 import com.example.samuL.common.exception.custom.HeaderException;
 import com.example.samuL.common.okResponse.OkResponse;
+import com.example.samuL.place.mapper.PlaceFavoriteMapper;
+import com.example.samuL.place.service.PlaceFavoriteService;
 import com.example.samuL.review.dto.ReviewPaginatedResponse;
 import com.example.samuL.review.dto.ReviewResponse;
 import com.example.samuL.review.service.ReviewService;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.HttpRetryException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,8 +37,7 @@ public class UserController {
     private UserService userService;
 
     private final ReviewService reviewService;
-
-  //  private final AuthenticationManager authenticationManager;
+    private final PlaceFavoriteService placeFavoriteService;
     private final JwtTokenProvider jwtTokenProvider;
 
 
@@ -140,5 +142,19 @@ public class UserController {
         ReviewPaginatedResponse<ReviewResponse> reviews = reviewService.getUserReviews(userId, page, size);
         return ResponseEntity.ok(reviews);
     }
+
+    @GetMapping("/likes")
+    public ResponseEntity<OkResponse<List<Long>>> getMyFavoritePlacesFor(
+            Authentication authentication,
+            HttpServletRequest request
+    ){
+        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
+        List<Long> favoritePlaceIds = placeFavoriteService.getMyFavoritePlaceIds(userId);
+        String path = request.getRequestURI();
+        return ResponseEntity.ok(OkResponse.success(favoritePlaceIds, path));
+    }
+
+
+
 }
 

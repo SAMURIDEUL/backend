@@ -35,18 +35,31 @@ public class PlaceController {
         return ResponseEntity.ok(OkResponse.success("6개 랜덤 추출 성공", response, request.getRequestURI()));
     }
 
+//    @GetMapping("/{placeId}")
+//    public ResponseEntity<PlaceDetailDto> getPlaceDetail(@PathVariable Long placeId){
+//        return ResponseEntity.ok(placeReviewService.getPlaceDetail(placeId));
+//    }
+
     @GetMapping("/{placeId}")
-    public ResponseEntity<PlaceDetailDto> getPlaceDetail(@PathVariable Long placeId){
-        return ResponseEntity.ok(placeReviewService.getPlaceDetail(placeId));
+    public ResponseEntity<OkResponse<PlaceDetailDto>> getPlaceDetail(
+            @PathVariable Long placeId,
+            HttpServletRequest request
+    ){
+        PlaceDetailDto placeDetail = placeReviewService.getPlaceDetail(placeId);
+        return ResponseEntity.ok(OkResponse.success(placeDetail,request.getRequestURI()));
     }
 
+
+
     @GetMapping("/{placeId}/reviews")
-    public ResponseEntity<ReviewPageDto> getReviewsPaged(
+    public ResponseEntity<OkResponse<ReviewPageDto>> getReviewsPaged(
             @PathVariable Long placeId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request
     ){
-        return ResponseEntity.ok(placeReviewService.getReviewsPaged(placeId, page, size));
+        ReviewPageDto reviews = placeReviewService.getReviewsPaged(placeId, page, size);
+        return ResponseEntity.ok(OkResponse.success(reviews, request.getRequestURI()));
     }
 
 }

@@ -48,14 +48,15 @@ public class PlaceCategoryController {
 //    }
     // 사진 추가, 썸네일 추가
     @GetMapping("{categoryId}/places")
-    public ResponseEntity<PlaceSelectScroll> getPlacesCategory(
+    public ResponseEntity<OkResponse<PlaceSelectScroll>> getPlacesCategory(
             @PathVariable Integer categoryId,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
             @RequestParam(required = false) String subdistrict,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false)BigInteger lastId,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            HttpServletRequest request
 
     ){
         // 카테고리 유효성 검사
@@ -69,7 +70,7 @@ public class PlaceCategoryController {
 
         PlaceSelectScroll response = placeService.getPlaceDetail(categoryId, city, district, subdistrict, keyword, lastId, size);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(OkResponse.success(response, request.getRequestURI()));
 
     }
 

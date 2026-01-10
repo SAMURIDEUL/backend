@@ -1,7 +1,9 @@
 package com.example.samuL.place.controller;
 
+import com.example.samuL.common.okResponse.OkResponse;
 import com.example.samuL.place.dto.PlaceLocDetailDto;
 import com.example.samuL.place.service.PlaceLocService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +22,14 @@ public class PlaceLocController {
     private final PlaceLocService placeLocService;
 
     @GetMapping("/nearby")
-    public ResponseEntity<List<PlaceLocDetailDto>> getNearbyPlaces(
+    public ResponseEntity<OkResponse<List<PlaceLocDetailDto>>> getNearbyPlaces(
             @RequestParam double lat,
             @RequestParam double lon,
-            @RequestParam(defaultValue = "2000") double radius
+            @RequestParam(defaultValue = "2000") double radius,
+            HttpServletRequest request
     ){
         List<PlaceLocDetailDto> nearbyPlaces = placeLocService.getNearbyPlaceWithPhoto(lat, lon, radius);
-        return ResponseEntity.ok(nearbyPlaces);
+        return ResponseEntity.ok(OkResponse.success(nearbyPlaces,request.getRequestURI()));
     }
 
 }

@@ -38,12 +38,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserMapper userMapper;
 
+    // 인증이 필요없는 api
     private static final List<String> WHITELIST = List.of(
             "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname"
-            , "/categories", "/categories/**"
+            , "/categories", "/categories/**", "/places"
             , "/places/**"
             , "/swagger-ui.html", "/v3/api-docs/**"
             , "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**"
+    );
+    // 인증이 필요한 api, 인증이 필요없는 api와 겹친 경우 해결하기 어려워 추가
+    private static final List<String> jwt_required = List.of(
+            "/places/*/like", "/places/likes"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -57,10 +62,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 화이트 리스트, 토큰 증명이 필요없는 경우
         String requestURI = request.getRequestURI();
 
-        if(isWhitelisted(requestURI)){
-            filterChain.doFilter(request,response);
-            return;
-        }
+        boolean isJwtRequired = jwt_required.stream().anyMatch(pattern->pathMatcher.match(pattern, requestURI));
+//        if(isWhitelisted(requestURI)){
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+            if(isWhitelisted(requestURI) && !isJwtRequired){
+                filterChain.doFilter(request,response);
+                return;
+            }
 //        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 //            filterChain.doFilter(request, response);
 //            return;

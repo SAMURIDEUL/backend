@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewDto addReview(ReviewDto reviewDto,
                                List<MultipartFile> imageFiles,
                                Long userId) throws IOException{
+        // 유효성 검사
         if(reviewDto.getContent() == null || reviewDto.getContent().length() < 5){
             throw new ReviewValidationException("리뷰 내용은 최소 5자 이상이어야 합니다.");
         }
@@ -39,9 +41,18 @@ public class ReviewServiceImpl implements ReviewService{
         if(reviewDto.getRating() < 1 || reviewDto.getRating() > 5){
             throw new ReviewValidationException("평점은 1점에서 5점 사이여야 합니다.");
         }
+
+        // 사용자id 세팅
         reviewDto.setUserId(userId);
+        // visited date 세팅
+        if(reviewDto.getVisitDate() == null){
+            reviewDto.setVisitDate(LocalDate.now());
+        }
+
+        // 리뷰 insert
         reviewMapper.insertReview(reviewDto);
 
+        // 이미지 업로드 처리
         Path uploadDir = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
         Files.createDirectories(uploadDir);
 
@@ -67,8 +78,9 @@ public class ReviewServiceImpl implements ReviewService{
                     throw new FileUploadsException("이미지 저장 중 오류가 발생했습니다.");
                 }
 
+
                 //System.out.println("파일 저장 경로: " + filePath.toAbsolutePath());
-                // DB 저장
+                // DB에 이미지 저장
                 String prefix = fileStorageProperties.getAccessUrlPrefix();
                 if (!prefix.endsWith("/")) prefix += "/";
                 ReviewPhotoDto photo = new ReviewPhotoDto();
