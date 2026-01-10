@@ -1,9 +1,11 @@
 package com.example.samuL.common.okResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Schema(description = "공통 응답 포맷")
 @Data
 public class OkResponse<T> {
     private int status;
