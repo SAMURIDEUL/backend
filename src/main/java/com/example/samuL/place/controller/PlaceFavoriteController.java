@@ -20,7 +20,7 @@ import java.util.List;
 public class PlaceFavoriteController {
     private final PlaceFavoriteService placeFavoriteService;
 
-    @Operation(summary = "찜 추가", description = "주어진 장소 id를 찜 목록에 추가합니다.")
+    @Operation(summary = "찜 추가", description = "주어진 장소 id를 찜 목록에 새로 추가합니다.")
     @PostMapping("/{placeId}/like")
     public ResponseEntity<OkResponse<Long>> addFavorite(
             @Parameter(description = "placeId", required = true)
