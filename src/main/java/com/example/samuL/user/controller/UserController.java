@@ -16,6 +16,7 @@ import com.example.samuL.user.dto.MyInfoDto;
 import com.example.samuL.user.dto.UpdateUserDto;
 import com.example.samuL.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,8 @@ public class UserController {
 
 
     // 이메일 중복 체크
-    @Operation(summary = "이메일 중복 체크", description = "이메일이 중복되는지 체크합니다. isDuplicated가 false(200 ok)면 중복되는 이메일이 없다는 뜻이고 true(400 bad Request)이면 중복되는 이메일임으로 사용이 불가능합니다.")
+    @Operation(summary = "이메일 중복 체크", description = "이메일이 중복되는지 체크합니다. isDuplicated가 false(200 ok)면 중복되는 이메일이 없다는 뜻이고 true(400 bad Request)이면 중복되는 이메일임으로 사용이 불가능합니다." +
+            " / request body 및 response가 swagger 상에서 원래와 다르게 나옵니다. notion을 확인해 주세요)")
     @PostMapping("/check-email")
     public ResponseEntity<OkResponse<Map<String, Object>>> checkEmail(@RequestBody Map<String, String> request, HttpServletRequest req){
         String email = request.get("email");
@@ -62,7 +64,8 @@ public class UserController {
     }
 
     //닉네임 중복 체크
-    @Operation(summary = "닉네임 중복 확인", description = "닉네임이 중복되는지 확인합니다. isDuplicated가 false(200 ok)면 중복되는 닉네임이 없다는 뜻이고 true(400 bad Request)이면 중복되는 닉네임으로 사용이 불가능합니다. ")
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임이 중복되는지 확인합니다. isDuplicated가 false(200 ok)면 중복되는 닉네임이 없다는 뜻이고 true(400 bad Request)이면 중복되는 닉네임으로 사용이 불가능합니다." +
+            " / request body 및 response가 swagger 상에서 원래와 다르게 나옵니다. notion을 확인해 주세요)")
     @PostMapping("/check-nickname")
     public ResponseEntity<OkResponse<Map<String, Object>>> checkNickname(@RequestBody Map<String, String> request, HttpServletRequest req){
 
@@ -129,7 +132,10 @@ public class UserController {
     // 회원 탈퇴
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 합니다.")
     @DeleteMapping("/delete")
-    public ResponseEntity<OkResponse<Void>> deleteUser(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request){
+    public ResponseEntity<OkResponse<Void>> deleteUser(
+            @Parameter(description = "accessToken")
+            @RequestHeader("Authorization") String authorizationHeader,
+            HttpServletRequest request){
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
             throw new HeaderException("잘못된 헤더입니다.");
         }
@@ -141,7 +147,9 @@ public class UserController {
     @Operation(summary = "자신이 적은 리뷰 조회", description = "자신이 적은 리뷰를 조회합니다.")
     @GetMapping("/reviews")
     public ResponseEntity<ReviewPaginatedResponse<ReviewResponse>> getMyReviews(
+            @Parameter(description = "현재 페이지, 만약 hasNext가 true라면 다음 페이지가 있다는 뜻으로 현재 페이지 + 1을 하면 다음 페이지")
             @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "한 번에 가져올 리뷰들의 개수")
             @RequestParam(defaultValue = "10") int size,
             Authentication authentication
     ){
