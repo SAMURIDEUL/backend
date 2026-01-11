@@ -19,4 +19,8 @@ public interface PlaceFavoriteMapper {
                        @Param("placeId")Long placeId);
 
     List<Long> selectFavoritePlaceIds(@Param("userId") Long userId);
+
+    boolean existsUserId(Long userId);
+    boolean existsPlaceId(Long placeId);
+    boolean existFavorite(Long userId, Long placeId);
 }

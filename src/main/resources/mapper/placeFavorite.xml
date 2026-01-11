@@ -28,4 +28,26 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id = "existsUserId" parameterType="long" resultType="boolean">
+        SELECT CASE WHEN EXISTS (
+        SELECT 1
+        FROM users
+        WHERE id = #{userId}
+        ) THEN TRUE ELSE FALSE END
+    </select>
+
+    <select id="existsPlaceId" parameterType="long" resultType="boolean">
+        SELECT CASE WHEN EXISTS (
+        SELECT 1
+        FROM places
+        WHERE id = #{placeId}
+        ) THEN TRUE ELSE FALSE END
+    </select>
+
+<!--    <select id="existFavorite">-->
+<!--        SELECT place_id-->
+<!--        FROM place_favorites-->
+<!--        WHERE user_id = #{userId}-->
+<!--    </select>-->
+
 </mapper>
