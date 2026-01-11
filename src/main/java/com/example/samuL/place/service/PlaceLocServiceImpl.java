@@ -1,6 +1,7 @@
 package com.example.samuL.place.service;
 
 
+import com.example.samuL.common.exception.custom.InvalidLocationException;
 import com.example.samuL.place.dto.PlaceLocDetailDto;
 import com.example.samuL.place.dto.PlacePlaceDto;
 import com.example.samuL.place.image.CategoryDefaultImage;
@@ -23,6 +24,20 @@ public class PlaceLocServiceImpl implements PlaceLocService{
 
     @Override
     public List<PlaceLocDetailDto> getNearbyPlaceWithPhoto(double lat, double lon, double radius){
+
+        if (lat < -90 || lat > 90){
+            throw new InvalidLocationException("위도(lat)은 -90에서 90 사이여야 합니다.");
+        }
+
+        if(lon < -180 || lon > 180){
+            throw new InvalidLocationException("경도(lon)은 -180에서 180 사이여야 합니다.");
+        }
+
+        if(radius <= 0){
+            throw new InvalidLocationException("반경(radius)는 0보다 커야 합니다.");
+        }
+
+
         List<PlacePlaceDto> places = placeLocMapper.selectNearbyPlaces(lat, lon);
 
         List<PlaceLocDetailDto> result = new ArrayList<>();
@@ -69,5 +84,7 @@ public class PlaceLocServiceImpl implements PlaceLocService{
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         return R * c;
     }
+
+
 
 }
