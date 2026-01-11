@@ -9,6 +9,7 @@ import com.example.samuL.auth.jwt.JwtTokenProvider;
 import com.example.samuL.auth.service.AuthService;
 import com.example.samuL.common.okResponse.OkResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,9 @@ public class AuthController {
     //refresh token을 통한 access token 재발급
     @Operation(summary = "refreshToken 재발급", description = "기존의 refreshToken을 통해 새로운 accessToken을 재발급합니다.")
     @PostMapping("/refresh")
-    public ResponseEntity<OkResponse<TokenResponseDto>> refreshAccessToken(@RequestHeader("Authorization") String bearerToken
+    public ResponseEntity<OkResponse<TokenResponseDto>> refreshAccessToken(
+            @Parameter(description = "refreshToken")
+            @RequestHeader("Authorization") String bearerToken
             , HttpServletRequest request){
         String refreshToken = bearerToken.replace("Bearer ", "");
         TokenResponseDto tokenResponseDto = authService.refreshAccessToken(refreshToken);
