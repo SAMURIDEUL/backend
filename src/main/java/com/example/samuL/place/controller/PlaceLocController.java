@@ -3,9 +3,11 @@ package com.example.samuL.place.controller;
 import com.example.samuL.common.okResponse.OkResponse;
 import com.example.samuL.place.dto.PlaceLocDetailDto;
 import com.example.samuL.place.service.PlaceLocService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +23,14 @@ public class PlaceLocController {
     // 위치를 이용한 장소 검색 전용 controller
     private final PlaceLocService placeLocService;
 
+    @Operation(summary = "위치/범위를 사용한 장소 찾기")
     @GetMapping("/nearby")
     public ResponseEntity<OkResponse<List<PlaceLocDetailDto>>> getNearbyPlaces(
+            @Parameter(description = "위도", required = true)
             @RequestParam double lat,
+            @Parameter(description = "경도", required = true)
             @RequestParam double lon,
+            @Parameter(description = "반경(반경 몇 meter) 즉 5000은 500m, 10000은 1km")
             @RequestParam(defaultValue = "2000") double radius,
             HttpServletRequest request
     ){

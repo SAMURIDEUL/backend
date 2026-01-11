@@ -42,6 +42,19 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String CreateNewToken(String email, String jti){
+        Date now = new Date(); //토큰 발급 시간
+        Date Validity = new Date(now.getTime() + JWT_TOKEN_TIME); // 토큰 만료 시간
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setId(jti)
+                .setIssuedAt(now)
+                .setExpiration(Validity)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     // refresh token
     public String createRefreshToken(String email){
         Date now = new Date();
@@ -135,6 +148,12 @@ public class JwtTokenProvider {
       return expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
+    // jwt 토큰에서 jti 추출
+    public String extractJti(String token) {
+        Claims claims = parseClaims(token);
+        return claims.getId();  // JWT 표준 클레임 jti
+    }
+
     private Claims parseClaims(String token){
         try{
             return Jwts.parserBuilder()
@@ -159,5 +178,9 @@ public class JwtTokenProvider {
         }
         return null;
     }
+
+
+
+
 
 }

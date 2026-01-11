@@ -15,6 +15,7 @@ import com.example.samuL.user.dto.ChangePasswordRequestDto;
 import com.example.samuL.user.dto.MyInfoDto;
 import com.example.samuL.user.dto.UpdateUserDto;
 import com.example.samuL.user.dto.UserDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class UserController {
 
 
     // 이메일 중복 체크
+    @Operation(summary = "이메일 중복 체크", description = "이메일이 중복되는지 체크합니다. isDuplicated가 false(200 ok)면 중복되는 이메일이 없다는 뜻이고 true(400 bad Request)이면 중복되는 이메일임으로 사용이 불가능합니다.")
     @PostMapping("/check-email")
     public ResponseEntity<OkResponse<Map<String, Object>>> checkEmail(@RequestBody Map<String, String> request, HttpServletRequest req){
         String email = request.get("email");
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     //닉네임 중복 체크
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임이 중복되는지 확인합니다. isDuplicated가 false(200 ok)면 중복되는 닉네임이 없다는 뜻이고 true(400 bad Request)이면 중복되는 닉네임으로 사용이 불가능합니다. ")
     @PostMapping("/check-nickname")
     public ResponseEntity<OkResponse<Map<String, Object>>> checkNickname(@RequestBody Map<String, String> request, HttpServletRequest req){
 
@@ -80,6 +83,7 @@ public class UserController {
     }
 
     // 회원가입
+    @Operation(summary = "회원가입", description = "회원가입, request body의 created_at, updated_at은 자동 생성됨으로 request body에 넣지 않아도 됩니다.")
     @PostMapping("/signup")
     public ResponseEntity<OkResponse<Void>> signup(@RequestBody UserDto userDto, HttpServletRequest request){
         userService.signupUser(userDto);
@@ -89,6 +93,7 @@ public class UserController {
 
 
     // 회원정보 조회
+    @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회합니다.")
     @GetMapping("/info")
     public ResponseEntity<OkResponse<MyInfoDto>> getMyInfo(Authentication authentication, HttpServletRequest request){
         String email = authentication.getName();
@@ -96,8 +101,8 @@ public class UserController {
         return ResponseEntity.ok(OkResponse.success("회원 조회 성공", myInfoDto, request.getRequestURI()));
     }
 
-
     // 회원정보 수정
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다. /request body에 updated_at은 넣을 필요 없습니다.")
     @PutMapping("/me")
     public ResponseEntity<OkResponse<Void>> updateMyInfo(
             @RequestBody UpdateUserDto updateUserDto,
@@ -111,6 +116,7 @@ public class UserController {
     }
 
     // 비밀번호 수정
+    @Operation(summary = "비밀번호 변경", description = "비밀번호를 변경합니다.")
     @PutMapping("/change-password")
     public ResponseEntity<OkResponse<Void>> changePassword(HttpServletRequest request, @RequestBody ChangePasswordRequestDto changePasswordRequestDto){
         String token = jwtTokenProvider.resolveToken(request);
@@ -121,6 +127,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 합니다.")
     @DeleteMapping("/delete")
     public ResponseEntity<OkResponse<Void>> deleteUser(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request){
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
@@ -131,6 +138,7 @@ public class UserController {
         return ResponseEntity.ok(OkResponse.success("회원 탈퇴 완료", request.getRequestURI()));
     }
 
+    @Operation(summary = "자신이 적은 리뷰 조회", description = "자신이 적은 리뷰를 조회합니다.")
     @GetMapping("/reviews")
     public ResponseEntity<ReviewPaginatedResponse<ReviewResponse>> getMyReviews(
             @RequestParam(defaultValue = "0") int page,
@@ -143,6 +151,7 @@ public class UserController {
         return ResponseEntity.ok(reviews);
     }
 
+    @Operation(summary = "자신의 찜 조회", description = "사용자가 찜한 placeId를 조회합니다.")
     @GetMapping("/likes")
     public ResponseEntity<OkResponse<List<Long>>> getMyFavoritePlacesFor(
             Authentication authentication,
