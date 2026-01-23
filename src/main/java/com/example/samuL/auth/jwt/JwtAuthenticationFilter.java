@@ -40,43 +40,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // 인증이 필요없는 api
     private static final List<String> WHITELIST = List.of(
-            "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname"
-            , "/categories", "/categories/**", "/places"
-            , "/places/**", "/places/random"
-            , "/swagger-ui.html", "/v3/api-docs/**"
-            , "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**"
-    );
+            "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname", "/categories",
+            "/categories/**", "/places", "/places/**", "/places/random", "/swagger-ui.html", "/v3/api-docs/**",
+            "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**");
     // 인증이 필요한 api, 인증이 필요없는 api와 겹친 경우 해결하기 어려워 추가
     private static final List<String> jwt_required = List.of(
-            "/places/*/like", "/places/likes"
-    );
+            "/places/*/like", "/places/likes");
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
-//
+        //
+
         final String authHeader = request.getHeader("Authorization");
         // 화이트 리스트, 토큰 증명이 필요없는 경우
         String requestURI = request.getRequestURI();
 
-        boolean isJwtRequired = jwt_required.stream().anyMatch(pattern->pathMatcher.match(pattern, requestURI));
-//        if(isWhitelisted(requestURI)){
-//            filterChain.doFilter(request,response);
-//            return;
-//        }
-            if(isWhitelisted(requestURI) && !isJwtRequired){
-                filterChain.doFilter(request,response);
-                return;
-            }
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//
-//        String token = authHeader.substring(7);
+        boolean isJwtRequired = jwt_required.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+        // if(isWhitelisted(requestURI)){
+        // filterChain.doFilter(request,response);
+        // return;
+        // }
+        if (isWhitelisted(requestURI) && !isJwtRequired) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // filterChain.doFilter(request, response);
+        // return;
+        // }
+        //
+        // String token = authHeader.substring(7);
 
         try {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -95,8 +93,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtTokenProvider.extractEmail(token);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                    null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -105,13 +103,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (AuthenticationException ex) {
             SecurityContextHolder.clearContext();
             jwtAuthenticationEntryPoint.commence(request, response, ex);
-         //   return;
+            // return;
         }
 
     }
-    private boolean isWhitelisted(String ur){
+
+    private boolean isWhitelisted(String ur) {
         return WHITELIST.stream().anyMatch(pattern -> pathMatcher.match(pattern, ur));
     }
 }
-
-
