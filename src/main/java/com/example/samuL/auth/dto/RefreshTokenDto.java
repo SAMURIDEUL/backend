@@ -1,9 +1,7 @@
 package com.example.samuL.auth.dto;
 
-
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
