@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-
 @Schema(description = "랜덤 6개 장소의 장소+썸네일용 dto")
 @Data
 @AllArgsConstructor

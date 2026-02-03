@@ -95,11 +95,23 @@
         <if test="keyword != null">
             AND p.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
-        <if test="lastId != null">
-            AND p.id &gt; #{lastId}
-        </if>
-        ORDER BY p.id DESC
-        LIMIT #{pageSize}
+
+        <choose>
+            <!-- 거리순 정렬 -->
+            <when test="lat != null and lon != null">
+               <!-- 거리 필터나 제한이 필요하다면 여기에 추가 (예: 반경 N km) -->
+               ORDER BY ST_Distance_Sphere(POINT(p.lon, p.lat), POINT(#{lon}, #{lat})) ASC
+               LIMIT #{lastId}, #{pageSize}
+            </when>
+            <!-- 기본 (최신순 등) -->
+            <otherwise>
+                <if test="lastId != null">
+                    AND p.id &lt; #{lastId}
+                </if>
+                ORDER BY p.id DESC
+                LIMIT #{pageSize}
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getPlaceByOffset" parameterType="long" resultMap="PlaceResultMap">

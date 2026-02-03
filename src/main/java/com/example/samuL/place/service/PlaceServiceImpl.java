@@ -4,8 +4,6 @@ import com.example.samuL.place.dto.*;
 
 import com.example.samuL.place.image.CategoryDefaultImage;
 import com.example.samuL.place.mapper.PlaceMapper;
-
-import com.example.samuL.place.mapper.PlaceReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
-    private final PlaceReviewMapper placeReviewMapper;
 
     @Override
     public PlaceScrollResponse getPlace(Integer categoryId,
@@ -29,7 +26,8 @@ public class PlaceServiceImpl implements PlaceService {
             int size) {
 
         // 1. 장소 목록 조회
-        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, lastId,
+        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, null, null,
+                lastId,
                 size + 1);
         boolean hasNext = false;
         if (places.size() > size) {
@@ -55,10 +53,18 @@ public class PlaceServiceImpl implements PlaceService {
             String district,
             String subdistrict,
             String keyword,
+            Double lat,
+            Double lon,
             BigInteger lastId,
             int size) {
         // 1. 장소 목록 조회
-        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, lastId,
+        BigInteger queryLastId = lastId;
+        if (lat != null && lon != null && lastId == null) {
+            queryLastId = BigInteger.ZERO;
+        }
+
+        List<PlaceDto> places = placeMapper.findPlaces(categoryId, city, district, subdistrict, keyword, lat, lon,
+                queryLastId,
                 size + 1);
         boolean hasNext = false;
         if (places.size() > size) {
@@ -114,7 +120,17 @@ public class PlaceServiceImpl implements PlaceService {
         }
 
         // 다음 커서
-        Long nextCursor = hasNext ? places.get(places.size() - 1).getId().longValue() : null;
+        Long nextCursor;
+        if (hasNext) {
+            if (lat != null && lon != null) {
+                long currentOffset = (lastId == null) ? 0 : lastId.longValue();
+                nextCursor = currentOffset + size;
+            } else {
+                nextCursor = places.get(places.size() - 1).getId().longValue();
+            }
+        } else {
+            nextCursor = null;
+        }
 
         return new PlaceSelectScroll(detailList, nextCursor, hasNext);
     }

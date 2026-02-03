@@ -1,6 +1,5 @@
 package com.example.samuL.place.mapper;
 
-
 import com.example.samuL.place.dto.PlaceDto;
 import com.example.samuL.place.dto.PlacePlaceDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,6 +20,8 @@ public interface PlaceMapper {
             @Param("district") String district,
             @Param("subdistrict") String subdistrict,
             @Param("keyword") String keyword,
+            @Param("lat") Double lat,
+            @Param("lon") Double lon,
             @Param("lastId") BigInteger lastId,
             @Param("pageSize") int pageSize
 
@@ -34,7 +35,6 @@ public interface PlaceMapper {
     Map<Long, Double> getAverageScores(@Param("placeIds") List<Long> placeIds);
 
     List<String> getPhotoUrlsByPlaceId(@Param("placeId") Long placeId);
-
 
     List<Map<String, Object>> getPhotoUrls(@Param("placeIds") List<Long> placeIds);
 
