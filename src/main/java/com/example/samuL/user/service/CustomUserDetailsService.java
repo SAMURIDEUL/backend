@@ -1,6 +1,5 @@
 package com.example.samuL.user.service;
 
-
 import com.example.samuL.user.dto.UserDto;
 import com.example.samuL.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserDto user = userMapper.findByEmail(email);
-        if(user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword_hash());
+        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword());
 
     }
 

@@ -4,14 +4,13 @@
 
 <mapper namespace="com.example.samuL.user.mapper.UserMapper">
     <!--회원가입-->
-    <insert id="signupUser" parameterType="com.example.samuL.user.dto.UserDto">
-        insert into users
-        values( #{id},
-        #{email},
-        #{password_hash},
+    <insert id="signupUser" parameterType="com.example.samuL.user.dto.UserDto" useGeneratedKeys="true" keyProperty="id">
+        insert into users (email, password_hash, nickname, created_at, updated_at)
+        values(#{email},
+        #{password},
         #{nickname},
-        #{created_at},
-        #{updated_at})
+        #{createdAt},
+        #{updatedAt})
     </insert>
     <!-- 이메일 중복 확인 -->
     <select id="countEmail" resultType="int">
@@ -28,8 +27,14 @@
     </select>
 
     <!-- 로그인 시 이메일 확인 -->
-    <select id = "findByEmail" parameterType="com.example.samuL.user.dto.UserDto">
-        select *
+    <select id = "findByEmail" resultType="com.example.samuL.user.dto.UserDto">
+        select
+            id,
+            email,
+            password_hash as password,
+            nickname,
+            created_at as createdAt,
+            updated_at as updatedAt
         from users
         where email = #{email}
     </select>
@@ -42,11 +47,11 @@
     </delete>
 
     <!-- 회원정보 수정 -->
-    <update id = "updateUser" parameterType="com.example.samuL.user.dto.UpdateUserDto">
+    <update id = "updateUser" parameterType="com.example.samuL.user.dto.UserDto">
         update users
         set
             nickname = #{nickname},
-            updated_at = #{updated_at}
+            updated_at = #{updatedAt}
         where email = #{email}
     </update>
 
