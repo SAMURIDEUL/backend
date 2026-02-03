@@ -44,13 +44,18 @@ public class GlobalExceptionHandler {
     // customException
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponseDto> handleCustomException(CustomException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
         ErrorResponseDto error = new ErrorResponseDto(
                 LocalDateTime.now(),
-                ex.getStatus().value(),
-                ex.getStatus().getReasonPhrase(),
+                status.value(),
+                status.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI());
-        return new ResponseEntity<>(error, ex.getStatus());
+        return new ResponseEntity<>(error, status);
     }
 
     // UsernameNotFoundException

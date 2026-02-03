@@ -1,7 +1,6 @@
 package com.example.samuL.common.okResponse;
 
-
-import io.swagger.v3.oas.annotations.Parameter;
+//import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,7 +20,7 @@ public class OkResponse<T> {
     @Schema(description = "요청 URL", example = "/places/nearby")
     private String path;
 
-    public OkResponse(int status, String message, T data, String path){
+    public OkResponse(int status, String message, T data, String path) {
         this.status = status;
         this.message = message;
         this.data = data;
@@ -29,15 +28,15 @@ public class OkResponse<T> {
         this.path = path;
     }
 
-    public static <T> OkResponse<T> success(String message, String path){
+    public static <T> OkResponse<T> success(String message, String path) {
         return new OkResponse<>(200, message, null, path);
     }
 
-    public static <T> OkResponse<T> success(T data, String path){
+    public static <T> OkResponse<T> success(T data, String path) {
         return new OkResponse<>(200, "요청 성공", data, path);
     }
 
-    public static <T> OkResponse<T> success(String message, T data, String path){
+    public static <T> OkResponse<T> success(String message, T data, String path) {
         return new OkResponse<>(200, message, data, path);
     }
 }
