@@ -10,6 +10,6 @@ public class RefreshTokenDto {
     private String email;
     private String refreshToken;
     private String lastAccessToken;
-    private LocalDateTime expired_at;
-    private LocalDateTime created_at;
+    private LocalDateTime expiredAt;
+    private LocalDateTime createdAt;
 }

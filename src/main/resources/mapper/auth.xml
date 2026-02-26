@@ -7,7 +7,12 @@
 
     <!-- 로그인 시 이메일 확인 -->
     <select id="findEmail" parameterType="com.example.samuL.auth.dto.LoginUserDto">
-        select *
+        select id,
+               email,
+               password_hash as password,
+               nickname,
+               created_at as createdAt,
+               updated_at as updatedAt
         from users
         where email = #{email}
     </select>

@@ -18,7 +18,7 @@
     <insert id="insert" parameterType="com.example.samuL.auth.dto.RefreshTokenDto">
         insert into refresh_token
         (id, email, refreshToken, lastAccessToken, expired_at, created_at)
-        values (#{id}, #{email}, #{refreshToken}, #{lastAccessToken}, #{expired_at}, #{created_at})
+        values (#{id}, #{email}, #{refreshToken}, #{lastAccessToken}, #{expiredAt}, #{createdAt})
     </insert>
 
 
@@ -39,8 +39,8 @@
         email,
         refreshToken,
         lastAccessToken,
-        expired_at,
-        created_at
+        expired_at as expiredAt,
+        created_at as createdAt
         from refresh_token
         where email = #{email}
     </select>
@@ -48,7 +48,7 @@
     <update id="updateLastAccessToken" parameterType="com.example.samuL.auth.dto.RefreshTokenDto">
         update refresh_token
         set lastAccessToken = #{lastAccessToken},
-            expired_at = #{expired_at}
+            expired_at = #{expiredAt}
         where email = #{email}
     </update>
 

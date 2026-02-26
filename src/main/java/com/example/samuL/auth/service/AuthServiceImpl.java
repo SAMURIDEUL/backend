@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("이메일이 틀렸습니다.");
         }
 
-        if (!passwordEncoder.matches(loginRequestDto.getPassword_hash(), loginUserDto.getPassword_hash())) {
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), loginUserDto.getPassword())) {
             throw new RuntimeException("비밀번호가 틀렸습니다.");
         }
         // jti 생성
@@ -87,8 +87,8 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenDto.setEmail(loginUserDto.getEmail());
         refreshTokenDto.setRefreshToken(refreshToken);
         refreshTokenDto.setLastAccessToken(accessToken);
-        refreshTokenDto.setExpired_at(expiryDate);
-        refreshTokenDto.setCreated_at(LocalDateTime.now());
+        refreshTokenDto.setExpiredAt(expiryDate);
+        refreshTokenDto.setCreatedAt(LocalDateTime.now());
         refreshTokenMapper.insert(refreshTokenDto);
 
         return new LoginResponseDto(accessToken, refreshToken);

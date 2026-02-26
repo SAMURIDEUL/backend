@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 public class LoginUserDto {
     private Long id;
     private String email;
-    private String password_hash;
+    private String password;
     private String nickname;
     @JsonFormat(pattern = "yyyy-MM-dd HH-mm-ss", timezone = "Asia/Seoul")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH-mm-ss", timezone = "Asia/Seoul")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 }
