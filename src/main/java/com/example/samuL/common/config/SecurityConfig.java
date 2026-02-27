@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:3000}")
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:3000,https://backend-production-ceb47.up.railway.app}")
     private String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
