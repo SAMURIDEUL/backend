@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:3000,https://backend-production-ceb47.up.railway.app}")
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:3000,http://localhost:8080,https://backend-production-ceb47.up.railway.app}")
     private String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/error", "/login", "/users/**").permitAll()
                 .requestMatchers("/categories", "/categories/**").permitAll()
                 .requestMatchers("/places", "/places/**").permitAll()
+                .requestMatchers("/place", "/place/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**",
                         "/v3/api-docs/**")
