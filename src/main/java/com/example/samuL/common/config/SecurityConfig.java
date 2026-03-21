@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/error", "/login", "/users/**").permitAll()
                 .requestMatchers("/categories", "/categories/**").permitAll()
                 .requestMatchers("/places", "/places/**").permitAll()
-                .requestMatchers("/place", "/place/**").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/place", "/place/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**",
                         "/v3/api-docs/**")

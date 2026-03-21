@@ -48,44 +48,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        //
-
-        final String authHeader = request.getHeader("Authorization");
-        // 화이트 리스트, 토큰 증명이 필요없는 경우
-        String requestURI = request.getRequestURI();
-        if (requestURI == null) {
-            requestURI = "";
+        // OPTIONS 요청 방어 (Preflight)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        final String finalRequestURI = requestURI;
+        final String authHeader = request.getHeader("Authorization");
+        String requestURI = request.getRequestURI() == null ? "" : request.getRequestURI();
+
         boolean isJwtRequired = false;
         for (String pattern : jwt_required) {
-            if (pattern != null && pathMatcher.match(pattern, finalRequestURI)) {
+            if (pattern != null && pathMatcher.match(pattern, requestURI)) {
                 isJwtRequired = true;
                 break;
             }
         }
-        // if(isWhitelisted(requestURI)){
-        // filterChain.doFilter(request,response);
-        // return;
-        // }
-        if (isWhitelisted(requestURI) && !isJwtRequired) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        // if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        // filterChain.doFilter(request, response);
-        // return;
-        // }
-        //
-        // String token = authHeader.substring(7);
 
-        try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new JwtAuthenticationException("토큰이 없습니다.");
+        // 토큰이 없는 경우
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // GET 요청이면서 리뷰/장소 조회인 경우 패스
+            boolean isPublicGet = "GET".equalsIgnoreCase(request.getMethod()) && 
+                    (pathMatcher.match("/place/**", requestURI) || pathMatcher.match("/places/**", requestURI));
 
+            if ((isWhitelisted(requestURI) && !isJwtRequired) || isPublicGet) {
+                filterChain.doFilter(request, response);
+                return;
+            } else {
+                SecurityContextHolder.clearContext();
+                jwtAuthenticationEntryPoint.commence(request, response, new JwtAuthenticationException("토큰이 없습니다."));
+                return;
             }
+        }
 
+        // 토큰이 있는 경우 무조건 검증 시도
+        try {
             String token = authHeader.substring(7);
 
             if (jwtBlacklistService.isTokenBlacklisted(token)) {
@@ -107,7 +104,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (AuthenticationException ex) {
             SecurityContextHolder.clearContext();
             jwtAuthenticationEntryPoint.commence(request, response, ex);
-            // return;
         }
 
     }
