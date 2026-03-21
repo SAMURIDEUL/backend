@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
     private String accessUrlPrefix;
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@org.springframework.lang.NonNull ResourceHandlerRegistry registry) {
         // Ensure prefix ends with a slash
         if (!accessUrlPrefix.endsWith("/")) {
             accessUrlPrefix += "/";

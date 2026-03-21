@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 인증이 필요없는 api
     private static final List<String> WHITELIST = List.of(
             "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname", "/categories",
-            "/categories/**", "/places", "/places/**", "/places/random", "/place", "/place/**", "/uploads/**", 
+            "/categories/**", "/places", "/places/**", "/places/random", "/uploads/**", 
             "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**");
     // 인증이 필요한 api, 인증이 필요없는 api와 겹친 경우 해결하기 어려워 추가
     private static final List<String> jwt_required = List.of(
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String authHeader = request.getHeader("Authorization");
-        String requestURI = request.getRequestURI() == null ? "" : request.getRequestURI();
+        String requestURI = java.util.Objects.requireNonNullElse(request.getRequestURI(), "");
 
         boolean isJwtRequired = false;
         for (String pattern : jwt_required) {
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             // GET 요청이면서 리뷰/장소 조회인 경우 패스
             boolean isPublicGet = "GET".equalsIgnoreCase(request.getMethod()) && 
-                    (pathMatcher.match("/place/**", requestURI) || pathMatcher.match("/places/**", requestURI));
+                    pathMatcher.match("/places/**", requestURI);
 
             if ((isWhitelisted(requestURI) && !isJwtRequired) || isPublicGet) {
                 filterChain.doFilter(request, response);

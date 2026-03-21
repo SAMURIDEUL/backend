@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/place/{placeId}/reviews")
+@RequestMapping("/places/{placeId}/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
@@ -43,16 +43,6 @@ public class ReviewController {
 
         ReviewDto saveReview = reviewService.addReview(reviewDto, images, userId);
         return ResponseEntity.ok(OkResponse.success(saveReview, request.getRequestURI()));
-    }
-
-    @Operation(summary = "리뷰 조회", description = "장소의 리뷰들을 조회합니다.")
-    @GetMapping
-    public ResponseEntity<List<ReviewDto>> getReviewsByPlace(
-            @Parameter(description = "장소 id")
-            @PathVariable Long placeId
-    ) {
-        List<ReviewDto> reviews = reviewService.getReviewsByPlace(placeId);
-        return ResponseEntity.ok(reviews);
     }
 
     @Operation(summary = "리뷰 내용이나 사진 추가 및 삭제", description = "리뷰 내용을 수정하거나 사진을 삭제하거나 추가할 수 있습니다.")
