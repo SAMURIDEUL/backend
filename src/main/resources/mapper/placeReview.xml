@@ -60,16 +60,18 @@
     <!-- 리뷰 목록 (무한 스크롤) -->
     <select id="getReviewsByPlacePaged" resultType="com.example.samuL.place.dto.PlaceReviewDto">
         SELECT
-        id,
-        place_id AS placeId,
-        user_id AS userId,
-        rating,
-        content,
-        visit_date AS visitDate,
-        created_at AS createdAt
-        FROM reviews
-        WHERE place_id = #{placeId}
-        ORDER BY id DESC
+        r.id,
+        r.place_id AS placeId,
+        r.user_id AS userId,
+        u.nickname AS nickname,
+        r.rating,
+        r.content,
+        r.visit_date AS visitDate,
+        r.created_at AS createdAt
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.place_id = #{placeId}
+        ORDER BY r.id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

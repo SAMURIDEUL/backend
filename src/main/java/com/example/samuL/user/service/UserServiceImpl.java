@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (userDto == null) {
             throw new UsernameNotFoundException("이메일을 찾을 수 없습니다.");
         }
-        return new MyInfoDto(userDto.getEmail(), userDto.getNickname(), userDto.getCreatedAt(), userDto.getUpdatedAt());
+        return new MyInfoDto(userDto.getId(), userDto.getEmail(), userDto.getNickname(), userDto.getCreatedAt(), userDto.getUpdatedAt());
     }
 
     // 회원 정보 수정

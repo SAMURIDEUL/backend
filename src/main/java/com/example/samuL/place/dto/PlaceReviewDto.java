@@ -16,6 +16,8 @@ public class PlaceReviewDto {
     private Long placeId;
     @Schema(description = "사용자 id", example = "8")
     private Long userId;
+    @Schema(description = "사용자 닉네임", example = "사물이")
+    private String nickname;
     @Schema(description = "별점", example = "5")
     private int rating;
     @Schema(description = "리뷰 내용", example = "음식이 맛있어요!")

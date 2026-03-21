@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MyInfoDto {
+    @Schema(description = "유저 고유 ID (PK)", example = "1")
+    private Long id;
+
     @Schema(description = "이메일", example = "1234@example.com")
     private String email;
 
