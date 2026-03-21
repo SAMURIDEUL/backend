@@ -35,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 인증이 필요없는 api
     private static final List<String> WHITELIST = List.of(
             "/users/login", "/users/signup", "/users/check-email", "/users/check-nickname", "/categories",
-            "/categories/**", "/places", "/places/**", "/places/random", "/swagger-ui.html", "/v3/api-docs/**",
-            "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**");
+            "/categories/**", "/places", "/places/**", "/places/random", "/place", "/place/**", "/uploads/**", 
+            "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**");
     // 인증이 필요한 api, 인증이 필요없는 api와 겹친 경우 해결하기 어려워 추가
     private static final List<String> jwt_required = List.of(
             "/places/*/like", "/places/likes");
