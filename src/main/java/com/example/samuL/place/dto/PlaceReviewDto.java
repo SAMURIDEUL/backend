@@ -1,5 +1,6 @@
 package com.example.samuL.place.dto;
 
+import com.example.samuL.review.dto.ReviewPhotoDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -26,9 +27,6 @@ public class PlaceReviewDto {
     private LocalDateTime visitDate;
     @Schema(description = "리뷰 생성 시각", example = "2026-01-10T15:14:15")
     private LocalDateTime createdAt;
-    @Schema(description = "사진 목록", example = "[" +
-            "                    \"/uploads/review_images/eace0e4a-979b-464d-84e8-cd572b8b3b21.jpg\"," +
-            "                    \"/uploads/review_images/7d5d4c8f-1a72-4167-a348-afbdb3fe15e7.jpg\"" +
-            "                ]")
-    private List<String> photos;
+    @Schema(description = "사진 목록 (id + photoUrl)")
+    private List<ReviewPhotoDto> photos;
 }

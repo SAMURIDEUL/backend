@@ -2,6 +2,7 @@ package com.example.samuL.place.mapper;
 
 import com.example.samuL.place.dto.PlacePlaceDto;
 import com.example.samuL.place.dto.PlaceReviewDto;
+import com.example.samuL.review.dto.ReviewPhotoDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +17,7 @@ public interface PlaceReviewMapper {
             @Param("offset") int offset,
             @Param("limit") int limit);
 
-    List<String> getReviewPhotos(@Param("reviewId") Long reviewId);
+    List<ReviewPhotoDto> getReviewPhotos(@Param("reviewId") Long reviewId);
 
     List<String> getPhotoUrlsByPlaceId(@Param("placeId") Long placeId);
 
