@@ -137,17 +137,19 @@ public class ReviewServiceImpl implements ReviewService {
         List<Long> deletedPhotoIds = new ArrayList<>();
         List<ReviewPhotoDto> oldPhotos = reviewMapper.selectReviewPhotos(reviewId);
 
+        // keepImageIds가 null이면 빈 리스트로 치환 (기존 사진 전부 삭제)
+        if (keepImageIds == null) {
+            keepImageIds = new ArrayList<>();
+        }
+
         // 삭제할 이미지 제거
-        if (keepImageIds != null) {
-            for (ReviewPhotoDto photo : oldPhotos) {
-                if (!keepImageIds.contains(photo.getId())) {
-                    if (photo.getPhotoUrl() != null && !photo.getPhotoUrl().isEmpty()) {
-                        String filename = photo.getPhotoUrl().substring(photo.getPhotoUrl().lastIndexOf("/") + 1);
-                        Files.deleteIfExists(uploadDir.resolve(filename));
-                        reviewMapper.deletePhotoById(photo.getId());
-                        deletedPhotoIds.add(photo.getId()); // response용
-                    }
-                    // reviewMapper.deletePhotoById(photo.getId());
+        for (ReviewPhotoDto photo : oldPhotos) {
+            if (!keepImageIds.contains(photo.getId())) {
+                if (photo.getPhotoUrl() != null && !photo.getPhotoUrl().isEmpty()) {
+                    String filename = photo.getPhotoUrl().substring(photo.getPhotoUrl().lastIndexOf("/") + 1);
+                    Files.deleteIfExists(uploadDir.resolve(filename));
+                    reviewMapper.deletePhotoById(photo.getId());
+                    deletedPhotoIds.add(photo.getId()); // response용
                 }
             }
         }
