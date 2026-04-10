@@ -45,8 +45,8 @@ public class ReviewController {
         return ResponseEntity.ok(OkResponse.success(saveReview, request.getRequestURI()));
     }
 
-    @Operation(summary = "리뷰 내용이나 사진 추가 및 삭제", description = "리뷰 내용을 수정하거나 사진을 삭제하거나 추가할 수 있습니다.")
-    @PutMapping(value = "/{reviewId}", consumes = "multipart/form-data")
+    @Operation(summary = "리뷰 내용이나 사진 추가 및 삭제 (POST)", description = "리뷰 내용을 수정하거나 사진을 삭제하거나 추가할 수 있습니다. (Tomcat의 PUT 메서드 멀티파트 파싱 이슈로 인해 POST 사용)")
+    @PostMapping(value = "/{reviewId}", consumes = "multipart/form-data")
     public ResponseEntity<ReviewUpdateResponse> updateReview(
             @PathVariable Long placeId,
             @Parameter(description = "리뷰 id", required = true)
