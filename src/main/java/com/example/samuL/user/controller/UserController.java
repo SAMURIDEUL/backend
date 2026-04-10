@@ -146,14 +146,15 @@ public class UserController {
 
     @Operation(summary = "자신이 적은 리뷰 조회", description = "자신이 적은 리뷰를 조회합니다.")
     @GetMapping("/reviews")
-    public ResponseEntity<ReviewPaginatedResponse<ReviewResponse>> getMyReviews(
+    public ResponseEntity<OkResponse<ReviewPaginatedResponse<ReviewResponse>>> getMyReviews(
             @Parameter(description = "현재 페이지, 만약 hasNext가 true라면 다음 페이지가 있다는 뜻으로 현재 페이지 + 1을 하면 다음 페이지") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 번에 가져올 리뷰들의 개수") @RequestParam(defaultValue = "10") int size,
-            Authentication authentication) {
+            Authentication authentication,
+            HttpServletRequest request) {
         Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
 
         ReviewPaginatedResponse<ReviewResponse> reviews = reviewService.getUserReviews(userId, page, size);
-        return ResponseEntity.ok(reviews);
+        return ResponseEntity.ok(OkResponse.success("자신이 적은 리뷰 조회 성공", reviews, request.getRequestURI()));
     }
 
     @Operation(summary = "자신의 찜 조회", description = "사용자가 찜한 placeId를 조회합니다.")
