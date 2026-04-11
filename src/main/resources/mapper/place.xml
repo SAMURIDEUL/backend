@@ -77,12 +77,12 @@
         p.lon,
         p.updated_at,
         p.category_id,
-        p.parking_available
+        p.parking_available,
         pp.pet_allowed,
         pp.pet_size_limit,
         pp.indoor_flag,
         pp.outdoor_flag,
-        pp.pet_restrictions,
+        pp.pet_restrictions
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         WHERE p.category_id = #{categoryId}
