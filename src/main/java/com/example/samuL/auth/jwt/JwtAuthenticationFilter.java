@@ -55,11 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String authHeader = request.getHeader("Authorization");
-        String requestURI = java.util.Objects.requireNonNullElse(request.getRequestURI(), "");
+        String requestURI = request.getRequestURI();
+        if (requestURI == null) {
+            requestURI = "";
+        }
 
         boolean isJwtRequired = false;
         for (String pattern : jwt_required) {
-            if (pattern != null && pathMatcher.match(pattern, requestURI)) {
+            if (pattern == null) continue;
+            if (pathMatcher.match(pattern, requestURI)) {
                 isJwtRequired = true;
                 break;
             }
@@ -110,7 +114,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isWhitelisted(@NonNull String ur) {
         for (String pattern : WHITELIST) {
-            if (pattern != null && pathMatcher.match(pattern, ur)) {
+            if (pattern == null) continue;
+            if (pathMatcher.match(pattern, ur)) {
                 return true;
             }
         }

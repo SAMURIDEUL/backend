@@ -28,6 +28,7 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
+            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -56,6 +57,7 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
+            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -79,7 +81,8 @@
         pp.pet_size_limit,
         pp.indoor_flag,
         pp.outdoor_flag,
-        pp.pet_restrictions
+        pp.pet_restrictions,
+        pp.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         WHERE p.category_id = #{categoryId}
@@ -134,7 +137,8 @@
         pp.pet_size_limit,
         pp.indoor_flag,
         pp.outdoor_flag,
-        pp.pet_restrictions
+        pp.pet_restrictions,
+        pp.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         LIMIT #{offset}, 1
@@ -161,7 +165,8 @@
         pp.pet_size_limit,
         pp.indoor_flag,
         pp.outdoor_flag,
-        pp.pet_restrictions
+        pp.pet_restrictions,
+        pp.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         LIMIT #{offset}, 1

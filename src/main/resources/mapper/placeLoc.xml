@@ -27,6 +27,7 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
+            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -53,6 +54,7 @@
         pp.indoor_flag,
         pp.outdoor_flag,
         pp.pet_restrictions,
+        pp.parking_available,
         ST_Distance_Sphere(
         p.geom,
         POINT(CAST(#{lon} AS DECIMAL(9,6)), CAST(#{lat} AS DECIMAL(9,6)))
