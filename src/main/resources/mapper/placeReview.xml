@@ -18,7 +18,7 @@
         <result property="lon" column="lon" />
         <result property="updatedAt" column="updated_at" />
         <result property="categoryId" column="category_id" />
-
+        <result property="parkingAvailable" column="parking_available" />
 
         <!-- PetPolicyDto를 중첩 객체로 매핑 -->
         <association property="petPolicy" javaType="com.example.samuL.place.dto.PetPolicyDto">
@@ -27,7 +27,6 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
-            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -52,7 +51,7 @@
     pp.indoor_flag,
     pp.outdoor_flag,
     pp.pet_restrictions,
-    pp.parking_available
+    p.parking_available
     FROM places p
     LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         WHERE p.id = #{placeId}

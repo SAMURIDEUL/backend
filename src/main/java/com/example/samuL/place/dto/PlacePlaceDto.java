@@ -39,6 +39,9 @@ public class PlacePlaceDto {
     @Schema(description = "카테고리 id", example = "3")
     private Long categoryId;
 
+    @Schema(description = "주차 가능 여부", example = "true")
+    private Boolean parkingAvailable;
+
     @Schema(description = "반려동물 제한 사항")
     private PetPolicyDto petPolicy;
     @Schema(description = "평균 별점/평점", example = "5.0")

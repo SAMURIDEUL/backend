@@ -19,6 +19,7 @@
         <result property="lon" column="lon" />
         <result property="updatedAt" column="updated_at" />
         <result property="categoryId" column="category_id" />
+        <result property="parkingAvailable" column="parking_available" />
 
 
         <!-- PetPolicyDto를 중첩 객체로 매핑 -->
@@ -28,7 +29,6 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
-            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -48,6 +48,7 @@
         <result property="lon" column="lon" />
         <result property="updatedAt" column="updated_at" />
         <result property="categoryId" column="category_id" />
+        <result property="parkingAvailable" column="parking_available" />
 
 
         <!-- PetPolicyDto를 중첩 객체로 매핑 -->
@@ -57,7 +58,6 @@
             <result property="indoorFlag" column="indoor_flag" />
             <result property="outdoorFlag" column="outdoor_flag" />
             <result property="petRestrictions" column="pet_restrictions" />
-            <result property="parkingAvailable" column="parking_available" />
         </association>
 
     </resultMap>
@@ -77,12 +77,12 @@
         p.lon,
         p.updated_at,
         p.category_id,
+        p.parking_available
         pp.pet_allowed,
         pp.pet_size_limit,
         pp.indoor_flag,
         pp.outdoor_flag,
         pp.pet_restrictions,
-        pp.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         WHERE p.category_id = #{categoryId}
@@ -138,7 +138,7 @@
         pp.indoor_flag,
         pp.outdoor_flag,
         pp.pet_restrictions,
-        pp.parking_available
+        p.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         LIMIT #{offset}, 1
@@ -166,7 +166,7 @@
         pp.indoor_flag,
         pp.outdoor_flag,
         pp.pet_restrictions,
-        pp.parking_available
+        p.parking_available
         FROM places p
         LEFT JOIN place_pet_policies pp ON p.id = pp.place_id
         LIMIT #{offset}, 1

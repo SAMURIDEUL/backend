@@ -25,6 +25,7 @@ public class PlaceDto {
     private String updatedAt;
     private Integer categoryId; // 카테고리 아이디
 
+    private Boolean parkingAvailable; // 주차 가능 여부
     private PetPolicyDto petPolicy;
     private Double averageRating; // 평균 별점
 //    private Integer reviewCount;

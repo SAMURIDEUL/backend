@@ -19,6 +19,4 @@ public class PetPolicyDto {
     private Boolean outdoorFlag; // 실외 가능
     @Schema(description = "그 외에 가게의 제한 사항", example = "제한사항 없음")
     private String petRestrictions; // 제한 사항
-    @Schema(description = "주차 가능 여부", example = "true")
-    private Boolean parkingAvailable; // 주차 가능 여부
 }
