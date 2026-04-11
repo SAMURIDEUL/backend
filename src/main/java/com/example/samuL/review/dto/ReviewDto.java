@@ -16,7 +16,7 @@ public class ReviewDto {
     @Schema(description = "사용자 id", example = "8")
     private Long userId;
     @Schema(description = "별점", example = "5")
-    private int rating;
+    private float rating;
     @Schema(description = "리뷰 내용", example = "음료가 따뜻해서 좋아요!")
     private String content;
     @Schema(description = "방문 날짜", example="2025-10-19 00:00:00")

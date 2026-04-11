@@ -17,7 +17,7 @@ public class ReviewWithPhotosDto {
     @Schema(description = "사용자 id")
     private Long userId;
     @Schema(description = "별점", example = "3")
-    private Integer rating;
+    private Float rating;
     @Schema(description = "리뷰 내용", example = "음식이 싱거워요")
     private String content;
     @Schema(description = "방문 날짜", example = "2025-10-19")

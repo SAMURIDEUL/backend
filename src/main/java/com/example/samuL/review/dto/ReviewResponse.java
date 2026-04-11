@@ -19,7 +19,7 @@ public class ReviewResponse {
     @Schema(description = "장소 id", example = "23849")
     private Long placeId;
     @Schema(description = "별점", example = "5")
-    private int rating;
+    private float rating;
     @Schema(description = "리뷰 내용", example = "음식이 맛있어요!")
     private String content;
     @Schema(description = "방문 날짜", example = "2025-10-19 00:00:00")
