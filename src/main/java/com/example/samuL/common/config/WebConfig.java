@@ -23,10 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
         if (!accessUrlPrefix.endsWith("/")) {
             accessUrlPrefix += "/";
         }
-        
+
         // e.g., "/uploads/review_images/**"
         String urlPattern = accessUrlPrefix + "**";
-        
+
         // Ensure uploadDir is absolute
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
         String resourceLocation = "file:" + uploadPath.toString() + "/";
