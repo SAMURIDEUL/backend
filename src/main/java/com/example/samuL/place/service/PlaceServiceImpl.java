@@ -80,9 +80,14 @@ public class PlaceServiceImpl implements PlaceService {
         List<Long> placeIds = places.stream().map(p -> p.getId().longValue()).toList();
 
         // 평점 조회
-        Map<Long, Double> avgScoreMap = placeMapper.getAverageScores(placeIds);
-        if (avgScoreMap == null) {
-            avgScoreMap = new HashMap<>();
+        List<Map<String, Object>> avgScoreRows = placeMapper.getAverageScores(placeIds);
+        Map<Long, Double> avgScoreMap = new HashMap<>();
+        if (avgScoreRows != null) {
+            for (Map<String, Object> row : avgScoreRows) {
+                Long pId = ((Number) row.get("placeId")).longValue();
+                Double avgScore = ((Number) row.get("avgScore")).doubleValue();
+                avgScoreMap.put(pId, avgScore);
+            }
         }
 
         // 사진 한 방 조회
